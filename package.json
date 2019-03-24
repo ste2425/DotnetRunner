@@ -18,12 +18,5 @@
   "dependencies": {
     "electron-is-dev": "^1.0.1",
     "electron-updater": "^4.0.6"
-  },
-  "build": {
-    "appId": "com.dotnetrunner.app",
-    "publish": {
-      "provider": "github",
-      "token": "2b54a77252e4476bf4ec641a8c1db67f0d5d82fc"
-    }
   }
 }
