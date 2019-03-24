@@ -1,0 +1,29 @@
+{
+  "name": "dotnet-runner",
+  "version": "0.0.1",
+  "description": "Electron application to launch dotnet applications",
+  "main": "startup.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "build --win",
+    "ship": "build --win -p always"
+  },
+  "author": "Stephen Cooper",
+  "license": "MIT",
+  "repository": "https://github.com/ste2425/DotnetRunner",
+  "devDependencies": {
+    "electron": "^4.0.8",
+    "electron-builder": "^20.39.0"
+  },
+  "dependencies": {
+    "electron-is-dev": "^1.0.1",
+    "electron-updater": "^4.0.6"
+  },
+  "build": {
+    "appId": "com.dotnetrunner.app",
+    "publish": {
+      "provider": "github",
+      "token": "2b54a77252e4476bf4ec641a8c1db67f0d5d82fc"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Settings</title>    
+    <script src="./settings.js"></script>
+  </head>
+  <body>
+    <p>Configure applications to run.</p>
+      <template id="appTemplate">
+          <div>
+            <input type="hidden" />
+            <input class="name" readonly placeholder="Name" />
+            <input class="cwd" readonly placeholder="Current Working Directory" />
+            <button class="delete-btn">delete</button>
+          </div>
+      </template>
+      <div class="existing">
+
+      </div>
+      <div class="new">
+        <input id="appName" placeholder="App name" />
+        <input id="appCWD" placeholder="App Current Working Directory (CWD)" />
+        <button id="pathSelector" data-path-input="#appCWD">Select path</button>
+        <button class="add-btn">Add</button>
+      </div>
+      <button onclick="window.close()">Done</button>
+  </body>
+</html>
