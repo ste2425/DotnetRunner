@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Settings</title>    
+    <script src="./appConfig.js"></script>
+    <link rel="stylesheet" href="../../../node_modules/bootstrap-css-only/css/bootstrap.css">
+    <link rel="stylesheet" href="./appConfig.css">
+  </head>
+  <body>
+    <h3 class="center clearfix">Configure applications to run.
+      <button class="btn btn-light float-right" onclick="window.close()">Done</button>
+    </h3>
+
+    <hr>
+
+    <template id="dotnetAppRead">
+      <div class="app-element">
+        <input type="hidden" class="index" />
+        <h3 class="app-name"></h3>
+        <div class="project-path"></div>
+        <button class="delete-btn btn btn-danger">delete</button>
+        <button class="edit-btn btn btn-light">Edit</button>
+      </div>
+    </template>
+
+    <template id="dotnetAppEdit">
+      <h3 class="app-name">Editing: <span></span></h3>
+      <form is="form-validateable">
+        <input type="hidden" class="index" name="appIndex" />
+        <div class="form-group">
+          <label for="appName">Application name.</label>
+          <input type="string" name="appName" required class="form-control"/>
+        </div>
+        <div clas="form-group">
+          <dotnet-project-selector
+            name="projectPath">
+          </dotnet-project-selector>
+          <small class="form-text text-muted">The path to the project to run.</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-light button-cancel">Cancel</button>
+      </form>
+    </template>
+
+    <form is="form-validateable" class="center">
+      <div class="form-group">
+        <label for="appName">Application name.</label>
+        <input type="string" name="appName" required class="form-control"/>
+      </div>
+      <div class="form-group">
+        <label for="projectPath">Project path.</label>
+        <dotnet-project-selector
+          name="projectPath"></dotnet-project-selector>
+        <small class="form-text text-muted">The path to the project to run. Select the folder that contains the projects .csproj file.</small>
+      </div>
+      <button type="submit" class="btn btn-primary">Insert</button>
+    </form>
+    <hr>
+    <div class="existing center"></div>
+  </body>
+</html>

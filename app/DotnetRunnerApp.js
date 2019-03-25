@@ -39,9 +39,11 @@ module.exports = class DotnetRunnerApp {
           //  autoHideMenuBar: true
         });
 
-        prefWindow.loadFile('app/settings.html');
+        prefWindow.loadFile('app/browserWindows/dotnetAppConfiguration/appConfig.html');
 
         prefWindow.on('close', () => this._mainWindow.webContents.send('reload-data'));
+
+        prefWindow.maximize();
     }
 
     /**
@@ -77,13 +79,13 @@ module.exports = class DotnetRunnerApp {
 
     run() {
         this._mainWindow = new BrowserWindow({
-            width: 800,
-            height: 600,
             webPreferences: {
                 nodeIntegration: true,
                 nodeIntegrationInWorker: true
             }
         });
+
+        this._mainWindow.maximize();
 
         this._mainWindow.loadFile('app/index.html');
 
