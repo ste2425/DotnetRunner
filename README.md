@@ -14,11 +14,14 @@ This is currently in very early pre-release.
 * ~~*Don't* expect any form or pretty UI or intuitive UX.~~
 * *Don't* expect anything to be tested.
 
-## Setup
+## Getting latest release
 
-* Install dependencies (Note, this can take a while, add -verbose to see further progress): npm i
-* Build project: npm run-script build
-* Start App: npm start electron
+The latest release can be donwloaded from https://github.com/ste2425/DotnetRunner/releases/latest
+
+## Running Source Code Locally
+
+* Install dependencies (Note, this can take a while, add -verbose to see further progress): `npm i`
+* Start App: `npm start`
 
 This is in active development so changes should be a regular occurrence.
 
