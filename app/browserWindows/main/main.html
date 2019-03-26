@@ -6,9 +6,11 @@
     <link rel="stylesheet" href="../../../node_modules/bootstrap-css-only/css/bootstrap.css">
     <link rel="stylesheet" href="./main.css">
     <script>
-      require('../../Components/Runner.js').register();
+      const path = require('path');
 
-      require('./main');
+      require(path.resolve(__dirname, '../../components/Runner.js')).register();
+
+      require(path.resolve(__dirname, './main'));
     </script>
   </head>
   <body>
