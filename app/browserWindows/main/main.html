@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Dotnet Runner</title>    
+    <link rel="stylesheet" href="../../../node_modules/bootstrap-css-only/css/bootstrap.css">
+    <link rel="stylesheet" href="./main.css">
+    <script>
+      require('../../Components/Runner.js').register();
+
+      require('./main');
+    </script>
+  </head>
+  <body>
+    <div class="btn-group">
+      <button class="purge btn btn-warning">
+        Purge .Net Processes <span class="runningProcessCount badge badge-secondary">0</span>
+      </button>
+      <button class="start-all btn btn-success">Start all</button>
+      <button class="terminate-all btn btn-danger">Stop all</button>
+    </div>
+
+    <hr>
+
+    <div class="runners"></div>
+  </body>
+</html>
