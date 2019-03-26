@@ -1,6 +1,6 @@
 const { app, BrowserWindow, Menu } = require('electron');
 const { autoUpdater } = require('electron-updater');
-const { showYesNoDialogAsync } = require('./app/dialog');
+const { showYesNoDialogAsync } = require('./app/utils/dialog');
 
 const DotnetRunnerApp = require('./app/DotnetRunnerApp');
 

@@ -4,7 +4,7 @@
 let instance;
 
 module.exports.start = function () {
-    instance = new Worker('./runningProcessWorker.js');
+    instance = new Worker('../../workers/runningProcesses/runningProcessWorker.js');
 
     return this;
 }

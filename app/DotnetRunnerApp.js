@@ -1,5 +1,5 @@
 const { BrowserWindow, Menu } = require('electron');
-const { getApplications } = require('./applicationStore');
+const { getApplications } = require('./data/applicationStore');
 
 module.exports = class DotnetRunnerApp {
     /**
@@ -85,9 +85,9 @@ module.exports = class DotnetRunnerApp {
             }
         });
 
-        this._mainWindow.maximize();
+        this._mainWindow.loadFile('app/browserWindows/main/main.html');
 
-        this._mainWindow.loadFile('app/index.html');
+        this._mainWindow.maximize();
 
         this._menu.setApplicationMenu(this.getMenu());
 

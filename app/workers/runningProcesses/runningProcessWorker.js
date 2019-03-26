@@ -1,4 +1,4 @@
-const { countRunningDotnetProcessesAsync } = require('./tasks');
+const { countRunningDotnetProcessesAsync } = require('../../tasks');
 
 
 function getTaskCount() {

@@ -1,12 +1,12 @@
 
 const remote = require('electron').remote;
 const { ipcRenderer } = require('electron');
-const states = require('./states');
-const { showYesNoDialogAsync, showMessageDialogAsync } = require('./dialog.js');
-const { stopAllDotnetProcessesAsync, countRunningDotnetProcessesAsync } = require('./tasks');
-const { getApplications } = require('./applicationStore');
+const { showYesNoDialogAsync, showMessageDialogAsync } = require('../../utils/dialog.js');
+const { stopAllDotnetProcessesAsync, countRunningDotnetProcessesAsync } = require('../../tasks');
+const { getApplications } = require('../../data/applicationStore');
+const Runner = require('../../components/Runner');
 
-const runningProccessesCounter = require('./runningProcesses');
+const runningProccessesCounter = require('../../workers/runningProcesses/runningProcesses');
 
 runningProccessesCounter
     .start()
@@ -29,7 +29,7 @@ function onDomContentLoaded() {
 }
 
 async function onReloadDataIPC() {
-    const running = apps.some(x => x.component.state !== states.stopped);
+    const running = apps.some(x => x.component.state !== Runner.states.stopped);
 
     if (!running) {
         loadData();
@@ -53,7 +53,7 @@ async function onReloadDataIPC() {
     let closing = false;
 
     window.addEventListener('beforeunload', (e) => {
-        if (!closing && apps.some(x => x.component.state !== states.stopped)) {
+        if (!closing && apps.some(x => x.component.state !== Runner.states.stopped)) {
             closing = true;
             e.returnValue = false;
 

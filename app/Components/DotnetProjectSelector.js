@@ -1,4 +1,4 @@
-const { showOpenDialog } = require('../dialog');
+const { showOpenDialog } = require('../utils/dialog');
 const fs = require('fs');
 
 module.exports = class DotnetProjectSelector extends HTMLElement {
