@@ -40,7 +40,7 @@ async function onReloadDataIPC() {
     const continueReload = await showYesNoDialogAsync('There are dotnet apps running. In order to reload these will need to be stopped.');
 
     if (continueReload) {
-        onTerminateAll({ noWarning: true})
+        onTerminateAll()
             .then(() => {
                 loadData();
                 
@@ -57,7 +57,7 @@ async function onReloadDataIPC() {
             closing = true;
             e.returnValue = false;
 
-            onTerminateAll({ noWarning: true })
+            onTerminateAll()
                 .then(() => {
                     remote.getCurrentWindow().close();
                 });
@@ -69,41 +69,23 @@ async function onPurgeClick() {
     const toKillCount = await countRunningDotnetProcessesAsync();
 
     if (toKillCount === 0) {
-        showMessageDialogAsync('There are no processes running.')
-            .then(() => console.log('Closed'));
-
         return;
     }
 
     const kill = await showYesNoDialogAsync(`There are upto (${toKillCount}) dotnet processes running (Potentially including child processes). Stop them all?`);
 
-    if (kill) {
-        const killResp = await stopAllDotnetProcessesAsync();
-
-        const successCount = (killResp.match(/SUCCESS/g) || []).length;
-
-        return showMessageDialogAsync(`${successCount} processes killed`);
-    }
+    if (kill)
+       await stopAllDotnetProcessesAsync();
 }
 
 async function onStartAll() {
-    const startAllApps = await showYesNoDialogAsync('Start all dotnet apps?');
-
-    if (startAllApps)
-        apps.forEach(x => x.component.onStart());
+    apps.forEach(x => x.component.onStart());
 }
 
-async function onTerminateAll({ noWarning }) {      
-    let stopAllApps;
+async function onTerminateAll() {
+    const promises = apps.map(x => x.component.onTerminate());
     
-    if (!noWarning)
-        stopAllApps = await showYesNoDialogAsync('Stop all dotnet apps?');
-
-    if (stopAllApps || noWarning) {
-        const promises = apps.map(x => x.component.onTerminate());
-    
-        return Promise.all(promises);
-    }
+    return Promise.all(promises);
 }
 
 

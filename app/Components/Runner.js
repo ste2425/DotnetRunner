@@ -61,17 +61,37 @@ module.exports = class RunnerElement extends HTMLElement {
         const start = shadow.querySelector('.start');
         const stop = shadow.querySelector('.terminate');
 
-        start.addEventListener('click', (e) => {
-            start.setAttribute('disabled', 'disabled');
-            stop.removeAttribute('disabled');
-            this.onStart();
-        });
-        stop.addEventListener('click', (e) => {
-            start.removeAttribute('disabled');
-            stop.setAttribute('disabled', 'disabled');
-            this.onTerminate();
-        });
+        start.addEventListener('click', (e) => this.onStart());
+        stop.addEventListener('click', (e) => this.onTerminate());
         shadow.querySelector('.clear-log').addEventListener('click', () => this.clearData());
+    }
+
+    _enableStart() {
+        if (!this.shadowRoot)
+            return;
+
+        this.shadowRoot.querySelector('.start').removeAttribute('disabled');
+    }
+    
+    _disableStart() {
+        if (!this.shadowRoot)
+            return;
+
+        this.shadowRoot.querySelector('.start').setAttribute('disabled', 'disabled');
+    }
+
+    _enableStop() {
+        if (!this.shadowRoot)
+            return;
+
+        this.shadowRoot.querySelector('.terminate').removeAttribute('disabled');
+    }
+    
+    _disableStop() {
+        if (!this.shadowRoot)
+            return;
+
+        this.shadowRoot.querySelector('.terminate').setAttribute('disabled', 'disabled');
     }
 
     onStart() {
@@ -134,14 +154,19 @@ module.exports = class RunnerElement extends HTMLElement {
     }
 
     setState(state) {
+        this._disableStart();
+        this._disableStop();
+
         switch(state) {
             case RunnerElement.states.starting:
                 this._state.textContent = 'Starting';
                 this._state.className = 'badge badge-info';
+                this._enableStop();
             break;
             case RunnerElement.states.running:
                 this._state.textContent = 'Running';
                 this._state.className = 'badge badge-success';
+                this._enableStop();
             break;
             case RunnerElement.states.stopping:
                 this._state.textContent = 'Stopping';
@@ -150,6 +175,7 @@ module.exports = class RunnerElement extends HTMLElement {
             case RunnerElement.states.stopped:
                 this._state.textContent = 'Stopped';
                 this._state.className = 'badge badge-secondary';
+                this._enableStart();
             break;
         }
         this.state = state;

@@ -36,14 +36,20 @@ module.exports = class DotnetRunnerApp {
         ({
             parent: this._mainWindow,
             modal: true,
+            show: false
           //  autoHideMenuBar: true
         });
+
+        prefWindow.setMenu(this.getPreferencesMenu());
 
         prefWindow.loadFile('app/browserWindows/dotnetAppConfiguration/appConfig.html');
 
         prefWindow.on('close', () => this._mainWindow.webContents.send('reload-data'));
 
-        prefWindow.maximize();
+        prefWindow.once('ready-to-show', () => {
+            prefWindow.show();
+            prefWindow.focus();
+        });
     }
 
     /**
@@ -54,8 +60,6 @@ module.exports = class DotnetRunnerApp {
     }
 
     /**
-     * 
-     * @param {Object} template
      * @returns {Menu}
      */
     getMenu() {
@@ -77,12 +81,36 @@ module.exports = class DotnetRunnerApp {
        return this._menu.buildFromTemplate(template);
     }
 
+    /**
+     * @returns {Menu}
+     */
+    getPreferencesMenu() {
+        const template = [
+            {
+                label: 'Help',
+                submenu: [{
+                    label: 'Toggle Developer Tools',
+                    accelerator: 'Ctrl+Shift+I',
+                    click: this._devToolsOnClick.bind(this)
+                }]
+            }
+        ];
+    
+       return this._menu.buildFromTemplate(template);        
+    }
+
     run() {
         this._mainWindow = new BrowserWindow({
+            show: false,
             webPreferences: {
                 nodeIntegration: true,
                 nodeIntegrationInWorker: true
             }
+        });
+
+        this._mainWindow.once('ready-to-show', () => {
+            this._mainWindow.show();
+            this._mainWindow.focus();
         });
 
         this._mainWindow.loadFile('app/browserWindows/main/main.html');
