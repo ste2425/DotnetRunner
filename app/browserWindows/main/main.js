@@ -4,7 +4,7 @@ const { ipcRenderer } = require('electron');
 const { showYesNoDialogAsync, showMessageDialogAsync } = require('../../utils/dialog.js');
 const { stopAllDotnetProcessesAsync, countRunningDotnetProcessesAsync } = require('../../tasks');
 const { getApplications } = require('../../data/applicationStore');
-const Runner = require('../../components/Runner');
+const Runner = require('../../Components/Runner');
 
 const runningProccessesCounter = require('../../workers/runningProcesses/runningProcesses');
 
