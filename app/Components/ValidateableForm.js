@@ -1,8 +1,5 @@
 module.exports = class ValidateableForm extends HTMLFormElement {
-    constructor() {
-        super();
-    }
-
+    
     connectedCallback() {
         this.noValidate = true;
 
@@ -12,10 +9,6 @@ module.exports = class ValidateableForm extends HTMLFormElement {
               event.stopPropagation();
             }
             this.classList.add('was-validated'); 
-        });
-
-        this.addEventListener('invalid', (e) => {
-            console.log(e);
         });
     }
 

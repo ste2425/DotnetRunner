@@ -1,40 +1,29 @@
-const { showOpenDialog } = require('../utils/dialog');
+const { showOpenDialog } = require('../../utils/dialog');
 const fs = require('fs');
+const webComponentBaseFactory = require('../WebComponentBaseFactory');
 
-module.exports = class DotnetProjectSelector extends HTMLElement {
-    constructor() {
-        super();
-    }
-
+/**
+ * Represents a Dotnet project selector control.
+ * @extends {HTMLElement}
+ */
+module.exports = class DotnetProjectSelector extends webComponentBaseFactory(HTMLElement) {
+    
     connectedCallback() {
-        const input = document.createElement('input'),
-            button = document.createElement('button');
+        /* 
+            Cannot create a shadow root as forms will ignore the input within
+            For validation.
+        */
+        const container = document.createElement('span');
+        
+        this.applyHTML(container, __dirname, 'DotnetProjectSelector.html');
 
-        input.required= true;
-        input.type = 'string';
-        input.name = this.getAttribute('name');
-        input.classList.add('form-control');
+        this.appendChild(container);
 
-        button.textContent = 'Select path.';
-        button.type = 'button';
-        button.classList.add('btn');
-        button.classList.add('btn-outline-secondary');
+        const input = this.querySelector('input'),
+            button = this.querySelector('.path-selector');
 
         button.addEventListener('click', this._cwdSelect.bind(this));
         input.addEventListener('input', this.validate.bind(this));
-
-        const buttonGroup = document.createElement('div');
-        buttonGroup.classList.add('input-group-append');
-
-        buttonGroup.appendChild(button);
-
-        const itemGroup = document.createElement('div');
-        itemGroup.classList.add('input-group');
-
-        itemGroup.appendChild(input);
-        itemGroup.appendChild(buttonGroup);
-
-        this.appendChild(itemGroup);
     }
 
     set value(val) {

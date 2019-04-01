@@ -1,0 +1,27 @@
+span.badge {
+    padding: 5px;
+}
+:host {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.terminal {
+    background-color: rgb(0, 36, 81);
+    color: #cccccc;
+    white-space: pre-line;
+    border: 1px solid rgba(128, 128, 128, 0.35);
+    border-radius: 4px;
+    padding: 5px;
+    word-break: break-word;
+    max-height: 200px;
+    overflow: auto;
+    flex: 1;
+}
+
+.log-item.error {
+    color: red;
+}
