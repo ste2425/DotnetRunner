@@ -1,6 +1,9 @@
-const { killDotnetProcessAsync, startDotnetProcess } = require('../tasks');
+const { killDotnetProcessAsync, startDotnetProcess } = require('../../tasks');
+const fs = require('fs');
+const path = require('path');
+const WebComponentBaseFactory = require('../WebComponentBaseFactory');
 
-module.exports = class RunnerElement extends HTMLElement {
+module.exports = class RunnerElement extends WebComponentBaseFactory(HTMLElement) {
     constructor() {
         super();
 
@@ -9,61 +12,34 @@ module.exports = class RunnerElement extends HTMLElement {
 
         this.cwd = '';
 
-        this._nameEL = document.createElement('h1');
-        this._terminal = document.createElement('div');
-        this._state = document.createElement('span');
-
-        this._applyTerminalStyles();
+        this._name = '';
 
         this.setState(RunnerElement.states.stopped);
     }
-    
-    _applyTerminalStyles() {
-        Object.assign(this._terminal.style, {
-            backgroundColor: 'rgb(0, 36, 81)',
-            color: '#cccccc',
-            whiteSpace: 'pre-line',
-            border: '1px solid rgba(128, 128, 128, 0.35)',
-            borderRadius: '4px',
-            padding: '5px',
-            wordBreak: 'break-word',
-            maxHeight: '200px',
-            overflow: 'auto'
-        });
-    }
 
     connectedCallback() {
-        const instance = document.createElement('div');
-        instance.innerHTML = `   
-        <style>
-            span.badge {
-                padding: 5px;
-            }
-        </style>
-        <link rel="stylesheet" href="../../../node_modules/bootstrap-css-only/css/bootstrap.css">  
-            <div class="d-flex justify-content-between align-items-center pb-2">
-                <div class="btn-group">
-                    <button class="start btn-sm btn btn-success">Start</button>
-                    <button class="terminate btn-sm btn btn-danger" disabled>Stop</button>
-                    <button class="clear-log btn-sm btn btn-light">Clear Log</button>
-                </div>
-            </div>`;
-
+        /**
+         * @type {ShadowRoot}
+         */
         let shadow = this.attachShadow({ mode: 'open'});
 
-        this._state.classList.add('badge');
+        this.applyHTML(shadow, __dirname, 'runner.html');
 
-        instance.querySelector('.btn-group').insertAdjacentElement('beforebegin', this._state);
-        shadow.appendChild(this._nameEL);
-        shadow.appendChild(instance);
-        shadow.appendChild(this._terminal);
+        this.applyStyle(shadow, __dirname, 'runner.css');
+
+        if (this._name)
+            shadow.querySelector('.name').textContent = this._name;
+
+        if (this.state != undefined)
+            this.setState(this.state);
 
         const start = shadow.querySelector('.start');
         const stop = shadow.querySelector('.terminate');
+        const clearLog = shadow.querySelector('.clear-log');
 
         start.addEventListener('click', (e) => this.onStart());
         stop.addEventListener('click', (e) => this.onTerminate());
-        shadow.querySelector('.clear-log').addEventListener('click', () => this.clearData());
+        clearLog.addEventListener('click', () => this.clearData());
     }
 
     _enableStart() {
@@ -119,20 +95,25 @@ module.exports = class RunnerElement extends HTMLElement {
             this.setState(RunnerElement.states.running);
 
         const el = document.createElement('span');
+        const terminal = this.shadowRoot.querySelector('.terminal');
+
+        el.classList.add('log-item');
 
         if (errorData)
-            el.style.color = 'red';
+            el.classList.add('error');
         
         el.textContent = d;
 
-        this._terminal.appendChild(el);
+        terminal.appendChild(el);
 
-        this._terminal.scrollTop = this._terminal.scrollHeight;
+        terminal.scrollTop = terminal.scrollHeight;
     }
 
     clearData() {
-        while(this._terminal.firstChild) {
-            this._terminal.removeChild(this._terminal.firstChild);
+        const terminal = this.shadowRoot.querySelector('.terminal');
+
+        while(terminal.firstChild) {
+            terminal.removeChild(terminal.firstChild);
         }
     }
 
@@ -150,35 +131,44 @@ module.exports = class RunnerElement extends HTMLElement {
     }
 
     set name(value) {
-        this._nameEL.textContent = value;
+        if (this.shadowRoot)
+            this.shadowRoot.querySelector('.name').textContent = value;
+
+        this._name = value;
     }
 
     setState(state) {
         this._disableStart();
         this._disableStop();
 
+        this.state = state;
+        
+        if (!this.shadowRoot)
+            return;
+
+        const stateEl = this.shadowRoot.querySelector('.state');
+
         switch(state) {
             case RunnerElement.states.starting:
-                this._state.textContent = 'Starting';
-                this._state.className = 'badge badge-info';
+                stateEl.textContent = 'Starting';
+                stateEl.className = 'state badge badge-info';
                 this._enableStop();
             break;
             case RunnerElement.states.running:
-                this._state.textContent = 'Running';
-                this._state.className = 'badge badge-success';
+                stateEl.textContent = 'Running';
+                stateEl.className = 'state badge badge-success';
                 this._enableStop();
             break;
             case RunnerElement.states.stopping:
-                this._state.textContent = 'Stopping';
-                this._state.className = 'badge badge-info';
+                stateEl.textContent = 'Stopping';
+                stateEl.className = 'state badge badge-info';
             break;
             case RunnerElement.states.stopped:
-                this._state.textContent = 'Stopped';
-                this._state.className = 'badge badge-secondary';
+                stateEl.textContent = 'Stopped';
+                stateEl.className = 'state badge badge-secondary';
                 this._enableStart();
             break;
         }
-        this.state = state;
     }
 
     static register() {
