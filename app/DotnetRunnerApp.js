@@ -26,12 +26,23 @@ module.exports = class DotnetRunnerApp {
          * @private
          */
         this._mainWindow;
+
+        /**
+         * @type {boolean}
+         * @private
+         */
+        this._preferencesOpen = false;
     }   
 
     /**
      * @private
      */
     _preferencesOnCLick() {
+        if (this._preferencesOpen)
+            return;
+
+        this._preferencesOpen = true;
+
         const prefWindow = new BrowserWindow
         ({
             parent: this._mainWindow,
@@ -44,7 +55,10 @@ module.exports = class DotnetRunnerApp {
 
         prefWindow.loadFile('app/browserWindows/dotnetAppConfiguration/appConfig.html');
 
-        prefWindow.on('close', () => this._mainWindow.webContents.send('reload-data'));
+        prefWindow.on('close', () => {
+            this._preferencesOpen = false;
+            this._mainWindow.webContents.send('reload-data');
+        });
 
         prefWindow.once('ready-to-show', () => {
             prefWindow.show();

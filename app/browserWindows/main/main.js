@@ -45,6 +45,14 @@ async function onReloadDataIPC() {
                 loadData();
                 
                 showMessageDialogAsync('Configuration reloaded');
+            })
+            .catch(async () => {
+                const forceReload = await showYesNoDialogAsync('Failed to stop all processes, reload anyway?');
+
+                if (forceReload) {
+                    loadData();
+                    showMessageDialogAsync('Configuration reloaded');
+                }
             });
     }
 }
@@ -84,7 +92,7 @@ async function onStartAll() {
 
 async function onTerminateAll() {
     const promises = apps.map(x => x.component.onTerminate());
-    
+
     return Promise.all(promises);
 }
 

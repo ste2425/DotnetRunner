@@ -22,6 +22,8 @@ module.exports = class DotnetProjectSelector extends webComponentBaseFactory(HTM
         const input = this.querySelector('input'),
             button = this.querySelector('.path-selector');
 
+        input.name = this.getAttribute('name');
+
         button.addEventListener('click', this._cwdSelect.bind(this));
         input.addEventListener('input', this.validate.bind(this));
     }
