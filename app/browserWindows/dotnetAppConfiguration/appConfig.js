@@ -1,7 +1,7 @@
 const { addDeletegateEventListener } = require('../../utils/eventUtils');
 const applicationStore = require('../../data/applicationStore');
-const dotnetProjectSelector = require('../../components/DotnetProjectSelector/DotnetProjectSelector');
-const validateableForm = require('../../components/ValidateableForm');
+const dotnetProjectSelector = require('../../Components/DotnetProjectSelector/DotnetProjectSelector');
+const validateableForm = require('../../Components/ValidateableForm');
 
 dotnetProjectSelector.register();
 
