@@ -10,8 +10,8 @@ const runningProccessesCounter = require('../../workers/runningProcesses/running
 
 runningProccessesCounter
     .start()
-    .on(function({ data }) {
-        document.querySelector('.runningProcessCount').textContent = data;
+    .on('data', function(count) {
+        document.querySelector('.runningProcessCount').textContent = count;
     });
 
 let apps = [];
@@ -92,6 +92,8 @@ async function onPurgeClick() {
 
     if (kill)
        await stopAllDotnetProcessesAsync();
+
+    runningProccessesCounter.triggerNow();
 }
 
 async function onStartAll() {
