@@ -24,6 +24,9 @@ function onDomContentLoaded() {
     document.querySelector('.purge').addEventListener('click', onPurgeClick);
     document.querySelector('.start-all').addEventListener('click', onStartAll);
     document.querySelector('.terminate-all').addEventListener('click', onTerminateAll);
+    document.querySelector('.display').addEventListener('click', () => {
+        document.querySelector('modal-element').setAttribute('display', 'true');
+    });
 
     loadData();
 }
