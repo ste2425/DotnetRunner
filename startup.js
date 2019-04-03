@@ -1,27 +1,23 @@
 const { app, BrowserWindow, Menu } = require('electron');
-const { autoUpdater } = require('electron-updater');
-const { showYesNoDialogAsync } = require('./app/utils/dialog');
 
 const DotnetRunnerApp = require('./app/DotnetRunnerApp');
+const SplashScreenApp = require('./app/SplashScreenApp');
 
-const isDev = require('electron-is-dev');
-
+const splashApp = new SplashScreenApp();
 const dotnetApp = new DotnetRunnerApp(BrowserWindow, Menu);
 
-app.on('ready', () => {
-    dotnetApp.run();
+splashApp.onReady = function() {
+    dotnetApp.run()
+        .once('ready-to-show', () => {
+            splashApp.close();
+            dotnetApp.show();
+        });
+}
 
-    if (!isDev)
-        autoUpdater.checkForUpdates();
+app.on('ready', () => {
+    splashApp.run();
 });
 
 app.on('window-all-closed', () => {    
       app.quit();
-});
-
-autoUpdater.on('update-downloaded', async () => {
-    const update = await showYesNoDialogAsync('Update downloaded. Install?');
-
-    if (update)
-        autoUpdater.quitAndInstall();
 });
