@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Dotnet Runner</title>    
+    <link rel="stylesheet" href="../../../node_modules/bootstrap-css-only/css/bootstrap.css">
+    <link rel="stylesheet" href="./splashScreen.css">
+    <script>    
+      const path = require('path');
+
+      require(path.resolve(__dirname, './splashScreen'));
+    </script>
+  </head>
+  <body>
+    <div class="logo">
+      <img src="../../assets/logo.png">
+    </div>
+    <span class="message"></span>
+    <div class="progress hidden">
+      <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+    </div>
+  </body>
+</html>
