@@ -1,0 +1,27 @@
+// To be removed
+
+don't forget disabled versions
+
+be sure to use CSS variables then can be fully themeable
+
+btn-warning
+    main: #ffb347
+    hover: #ffcc84
+    border: #ffc107
+
+btn-success - should be primary?
+    main: #8c54a1
+    hover: #9a8ac1
+    border: #4f305a
+
+btn-danger
+    main: #ff6961
+    hover: #ffa5a0
+    bordeR: #dc3545
+
+body: 
+    backgeround colour: #b2ebf9
+
+runner-element:
+    background colour: rgba(166, 187, 221, 0.6)
+    border: #9472b3
