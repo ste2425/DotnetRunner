@@ -10,10 +10,17 @@
 
       require(path.resolve(__dirname, '../../Components/runner/Runner.js')).register();
 
+      
+      require(path.resolve(__dirname, '../../Components/dropdown/dropdown.js')).register();
+
       require(path.resolve(__dirname, './main'));
     </script>
   </head>
   <body>
+    <drop-down label="troll init" active="True">
+      <button>ItemOne</button>
+      <button>ItemTwo</button>
+    </drop-down>
     <div class="btn-group">
       <button class="purge btn btn-warning">
         Purge .Net Processes <span class="runningProcessCount badge badge-secondary">0</span>
