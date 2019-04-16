@@ -1,7 +1,10 @@
 const { killDotnetProcessAsync, startDotnetProcess } = require('../../tasks');
-const fs = require('fs');
-const path = require('path');
 const WebComponentBaseFactory = require('../WebComponentBaseFactory');
+const Terminal = require('xterm').Terminal;
+const pty = require('node-pty');
+//const fit = require('xterm/lib/addons/fit/fit');
+
+//Terminal.apply(fit);
 
 module.exports = class RunnerElement extends WebComponentBaseFactory(HTMLElement) {
     constructor() {
@@ -13,6 +16,9 @@ module.exports = class RunnerElement extends WebComponentBaseFactory(HTMLElement
         this.cwd = '';
 
         this._name = '';
+
+        this._terminalProcess;
+        this._ptyProcess;
 
         this.setState(RunnerElement.states.stopped);
     }
@@ -40,6 +46,19 @@ module.exports = class RunnerElement extends WebComponentBaseFactory(HTMLElement
         start.addEventListener('click', (e) => this.onStart());
         stop.addEventListener('click', (e) => this.onTerminate());
         clearLog.addEventListener('click', () => this.clearData());
+
+        this._terminalProcess = new Terminal();
+        this._ptyProcess = pty.spawn('cmd.exe', [], {
+            name: 'xterm-color',
+            cwd: process.cwd(),
+            env: process.env
+          });
+
+        this._terminalProcess.open(shadow.querySelector('.terminal'));
+        this._terminalProcess.on('data', (d) => 
+            this._ptyProcess.write(d));
+        this._ptyProcess.on('data', (d) => 
+            this._terminalProcess.write(d));        
     }
 
     _enableStart() {
@@ -71,6 +90,10 @@ module.exports = class RunnerElement extends WebComponentBaseFactory(HTMLElement
     }
 
     onStart() {
+
+        this._ptyProcess.write(`dotnet run --project ${this.cwd}\n\r`);
+
+        return;
         if (this.state === RunnerElement.states.running || this.state === RunnerElement.states.starting)
             return;
 
@@ -95,7 +118,7 @@ module.exports = class RunnerElement extends WebComponentBaseFactory(HTMLElement
             this.setState(RunnerElement.states.running);
 
         const el = document.createElement('span');
-        const terminal = this.shadowRoot.querySelector('.terminal');
+       // const terminal = this.shadowRoot.querySelector('.terminal');
 
         el.classList.add('log-item');
 
@@ -104,17 +127,17 @@ module.exports = class RunnerElement extends WebComponentBaseFactory(HTMLElement
         
         el.textContent = d;
 
-        terminal.appendChild(el);
+        //terminal.appendChild(el);
 
-        terminal.scrollTop = terminal.scrollHeight;
+        //terminal.scrollTop = terminal.scrollHeight;
     }
 
     clearData() {
-        const terminal = this.shadowRoot.querySelector('.terminal');
+     //  const terminal = this.shadowRoot.querySelector('.terminal');
 
-        while(terminal.firstChild) {
-            terminal.removeChild(terminal.firstChild);
-        }
+       // while(terminal.firstChild) {
+       //     terminal.removeChild(terminal.firstChild);
+       // }
     }
 
     onTerminate() {      

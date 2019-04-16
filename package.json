@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
     "build": "build --win",
-    "ship": "build --win -p always"
+    "ship": "build --win -p always",
+    "rebuild": "electron-rebuild -f -w node-pty"
   },
   "author": "Stephen Cooper",
   "license": "MIT",
@@ -18,6 +19,9 @@
   "dependencies": {
     "bootstrap-css-only": "^4.3.1",
     "electron-is-dev": "^1.0.1",
-    "electron-updater": "^4.0.6"
+    "electron-rebuild": "^1.8.4",
+    "electron-updater": "^4.0.6",
+    "node-pty": "^0.8.1",
+    "xterm": "^3.12.0"
   }
 }
