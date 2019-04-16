@@ -40,12 +40,28 @@ module.exports = class ModalElement extends WebComponentBaseFactory(HTMLElement)
             this._hide();
     }
 
+    get visible() {
+        return this._open;
+    }
+
     show() {
-        this.setAttribute('display', 'true');
+        const event = new CustomEvent('modal-opening', {
+            cancelable: true,
+            bubbles: true
+        });
+
+        if (this.dispatchEvent(event))
+            this.setAttribute('display', 'true');
     }
 
     hide() {
-        this.setAttribute('display', 'false');
+        const event = new CustomEvent('modal-closing', {
+            cancelable: true,
+            bubbles: true
+        });
+
+        if (this.dispatchEvent(event))
+            this.setAttribute('display', 'false');
     }
 
     _onEsc(e) {
@@ -65,7 +81,7 @@ module.exports = class ModalElement extends WebComponentBaseFactory(HTMLElement)
     _onDialogClick(e) {
         e.stopPropagation();
 
-        if (e.target.matches("[data-dismiss]"))    
+        if (e.target.matches("[data-modal-dismiss]"))    
             this.hide();
     }
 
@@ -75,8 +91,12 @@ module.exports = class ModalElement extends WebComponentBaseFactory(HTMLElement)
 
         elem.classList.remove('modal-lg');
         elem.classList.remove('modal-sm');
+        elem.classList.remove('modal-xl');
 
         switch(size) {
+            case 'xLarge':
+                elem.classList.add('modal-xl');
+            break;
             case 'large':
                 elem.classList.add('modal-lg');
             break;
@@ -86,6 +106,22 @@ module.exports = class ModalElement extends WebComponentBaseFactory(HTMLElement)
         }
     }
 
+    _disableBodyOverflow() {
+        const body = this.shadowRoot
+            .getRootNode({composed:true})
+            .querySelector('body');
+
+        body.style.overflow = 'hidden';
+    }
+
+    _resetBodyOverflow() {
+        const body = this.shadowRoot
+            .getRootNode({composed:true})
+            .querySelector('body');
+
+        body.style.overflow = 'initial';        
+    }
+
     _show() {
         this._open = true;
 
@@ -93,8 +129,7 @@ module.exports = class ModalElement extends WebComponentBaseFactory(HTMLElement)
             bodyTemaplate = this.shadowRoot.querySelector('#body'),
             footerTemaplate = this.shadowRoot.querySelector('#footer');
 
-        this.closest('body')
-            .style.overflow = 'hidden';
+        this._disableBodyOverflow();
 
         this._applySize();
 
@@ -114,14 +149,8 @@ module.exports = class ModalElement extends WebComponentBaseFactory(HTMLElement)
 
     _hide() {
         this._open = false;
-
-        const modalContent = this.shadowRoot.querySelector('.modal-body');
-
-        this.closest('body').removeAttribute('style');
-
-        while(modalContent.firstChild) {
-            modalContent.removeChild(modalContent.firstChild);
-        }
+        
+        this._resetBodyOverflow();
 
         Array.from(this.shadowRoot.querySelectorAll('.modal, .modal-backdrop'))
             .forEach(x => x.classList.remove('show'));
