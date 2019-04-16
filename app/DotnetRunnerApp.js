@@ -122,14 +122,7 @@ module.exports = class DotnetRunnerApp {
             }
         });
 
-        this._mainWindow.once('ready-to-show', () => {
-            this._mainWindow.show();
-            this._mainWindow.focus();
-        });
-
         this._mainWindow.loadFile('app/browserWindows/main/main.html');
-
-        this._mainWindow.maximize();
 
         this._menu.setApplicationMenu(this.getMenu());
 
@@ -138,5 +131,17 @@ module.exports = class DotnetRunnerApp {
         if (!eixstingApps || eixstingApps.length === 0) {
             this._preferencesOnCLick();
         }
+
+        return this;
+    }
+
+    show() {
+        this._mainWindow.show();
+        this._mainWindow.focus();
+        this._mainWindow.maximize();
+    }
+
+    once(...args) {
+        this._mainWindow.once(...args);
     }
 }
