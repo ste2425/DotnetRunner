@@ -20,15 +20,20 @@ document.addEventListener('DOMContentLoaded', onDomContentLoaded);
 
 ipcRenderer.on('reload-data', onReloadDataIPC);
 
+ipcRenderer.on('display-release-notes', onDisplayReleaseNotes);
+
 function onDomContentLoaded() {
     document.querySelector('.purge').addEventListener('click', onPurgeClick);
     document.querySelector('.start-all').addEventListener('click', onStartAll);
     document.querySelector('.terminate-all').addEventListener('click', onTerminateAll);
-    document.querySelector('.display').addEventListener('click', () => {
-        document.querySelector('modal-element').setAttribute('display', 'true');
-    });
 
     loadData();
+}
+
+function onDisplayReleaseNotes() {
+    const releaseNotesModal = document.querySelector('releasenotes-modal');
+
+    releaseNotesModal.display();
 }
 
 async function onReloadDataIPC() {
@@ -58,7 +63,7 @@ async function onReloadDataIPC() {
                 }
             });
     }
-}
+} 
 
 (() => {
     let closing = false;
