@@ -1,32 +1,31 @@
 const { countRunningDotnetProcessesAsync } = require('../../tasks');
 
+const { WebWorkerChild } = require('../workerManagers');
+
+const childManager = new WebWorkerChild();
+
 let pendingTimeout;
-
-const handlers = {
-    triggerNow() {
-        console.log('run')
-        clearTimeout(pendingTimeout);
-
-        getTaskCount();
-    }
-}
 
 function getTaskCount() {
     countRunningDotnetProcessesAsync()
         .then(count => {
-            postMessage({
-                channel: 'data',
-                data: count
-            });
+            childManager.emit('data', count);
+            
             pendingTimeout = setTimeout(getTaskCount, 5000);
         });
 }
 
-onMessage = (e) => {
-    console.log('on message');
-    const {channel, data} = e.data;
-    
-    handlers[channel](data);
-};
+function stopTaskCount() {
+    clearTimeout(pendingTimeout);
+}
 
-getTaskCount();
+function triggerNow() {
+    stopTaskCount();
+    getTaskCount();
+}
+
+childManager.on('start', getTaskCount);
+
+childManager.on('stop', stopTaskCount);
+
+childManager.on('triggerNow', triggerNow);

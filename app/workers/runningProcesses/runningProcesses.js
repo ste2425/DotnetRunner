@@ -1,43 +1,28 @@
-/**
- * @type {Worker}
- */
-let instance;
+const { WebWorkerHost } = require('../workerManagers');
 
-const handlers = {};
-
-function messageHandler(e) {
-    const {channel, data} = e.data;
-
-    (handlers[channel] || [])
-        .forEach(x => x(data));
-}
+const hostManager = new WebWorkerHost('../../workers/runningProcesses/runningProcessWorker.js');
 
 module.exports.start = function () {
-    instance = new Worker('../../workers/runningProcesses/runningProcessWorker.js');
-
-    instance.addEventListener('message', messageHandler);
+    hostManager.emit('start');
 
     return this;
 }
 
 module.exports.stop = function () {
-    instance.removeEventListener('message', messageHandler);
-
-    instance.terminate();
-
+    hostManager.emit('stop');
+    
+    hostManager.terminate();
     return this;
 }
 
-module.exports.on = function (channel, handler) {    
-    if (!(channel in handlers))
-        handlers[channel] = [];
-
-    handlers[channel].push(handler);
+module.exports.on = function (...args) {    
+    hostManager.on(...args)
 
     return this;
 }
 
 module.exports.triggerNow = function () {
-    console.log('Trigger');
-    instance.postMessage('message', { channel: 'triggerNow' });
+    hostManager.emit('triggerNow');
+
+    return this;
 }
