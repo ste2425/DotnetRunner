@@ -1,13 +1,5 @@
 # Dotnet Runner
 
-# *Running version < 4* - Auto update broken.
-If anyone happens to be running a version lower than 0.0.4 then auto update is now broken. 
-I borked setting up access token and essentially releases < 0.0.4 wont update. So instead manually download version 0.0.4 and installing will restore normal updates.
-
-All part of the learning experience!
-
----
-
 Electron app to manage running multiple Dotnet Core applications.
 
 This is currently in very early pre-release.
@@ -34,3 +26,11 @@ The latest release can be donwloaded from https://github.com/ste2425/DotnetRunne
 This is in active development so changes should be a regular occurrence.
 
 Watch this space.
+
+---
+
+# *Running version < 4* - Auto update broken.
+If anyone happens to be running a version lower than 0.0.4 then auto update is now broken. 
+I borked setting up access token and essentially releases < 0.0.4 wont update. So instead manually download version 0.0.4 and installing will restore normal updates.
+
+All part of the learning experience!
