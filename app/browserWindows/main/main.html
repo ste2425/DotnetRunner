@@ -8,10 +8,14 @@
     <script>
       const path = require('path');
 
+      require(path.resolve(__dirname, '../../Components/releaseNotesViewer/releaseNotesViewer.js')).register();
+      require(path.resolve(__dirname, '../../Components/releaseNotesViewer/releaseNotesModal.js')).register();
+
       require(path.resolve(__dirname, '../../Components/runner/Runner.js')).register();
 
       
       require(path.resolve(__dirname, '../../Components/dropdown/dropdown.js')).register();
+      require(path.resolve(__dirname, '../../Components/modal/modal.js')).register();
 
       require(path.resolve(__dirname, './main'));
     </script>
@@ -21,6 +25,7 @@
       <button>ItemOne</button>
       <button>ItemTwo</button>
     </drop-down>
+    <releasenotes-modal></releasenotes-modal>
     <div class="btn-group">
       <button class="purge btn btn-warning">
         Purge .Net Processes <span class="runningProcessCount badge badge-secondary">0</span>

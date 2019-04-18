@@ -1,6 +1,7 @@
 const { BrowserWindow } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const { showYesNoDialogAsync } = require('./utils/dialog');
+const upgradeState = require('./data/upgradeState');
 
 module.exports = class SplashScreenApp {
 
@@ -28,7 +29,7 @@ module.exports = class SplashScreenApp {
             this._splashWindow
                 .webContents.send('update-not-available');
             
-            this.onReady();
+            this._executeOnReady();
         }); 
         
         autoUpdater.on('download-progress', (e) => {
@@ -47,17 +48,19 @@ module.exports = class SplashScreenApp {
         
             // Give time to read error
             setTimeout(() => {
-               this.onReady();
+               this._executeOnReady();
             }, 2000);
         }); 
 
         autoUpdater.on('update-downloaded', async () => {
             const update = await showYesNoDialogAsync('Update downloaded. Install?');
         
-            if (update)
+            if (update) {
+                upgradeState.markUpgradeActive();
                 autoUpdater.quitAndInstall();
-            else
-                this.onReady();
+            } else {
+                this._executeOnReady();
+            }
         });
     }
 
@@ -81,5 +84,16 @@ module.exports = class SplashScreenApp {
 
     close() {
         this._splashWindow.close();
+    }
+
+    _executeOnReady() {
+        const settings = {
+            upgradePerformed: upgradeState.isUpgradeActive()
+        };
+
+        if (settings.upgradePerformed)
+            upgradeState.markUpgradeFinished();
+
+        this.onReady(settings);
     }
 }

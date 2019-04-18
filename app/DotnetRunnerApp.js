@@ -85,6 +85,9 @@ module.exports = class DotnetRunnerApp {
             {
                 label: 'Help',
                 submenu: [{
+                    label: 'Release Notes',
+                    click: this._displayReleaseNotes.bind(this)
+                }, {
                     label: 'Toggle Developer Tools',
                     accelerator: 'Ctrl+Shift+I',
                     click: this._devToolsOnClick.bind(this)
@@ -93,6 +96,10 @@ module.exports = class DotnetRunnerApp {
         ];
     
        return this._menu.buildFromTemplate(template);
+    }
+
+    _displayReleaseNotes() {
+        this._mainWindow.webContents.send('display-release-notes');
     }
 
     /**
@@ -113,7 +120,9 @@ module.exports = class DotnetRunnerApp {
        return this._menu.buildFromTemplate(template);        
     }
 
-    run() {
+    run({
+        displayReleaseNotes
+    } = {}) {
         this._mainWindow = new BrowserWindow({
             show: false,
             webPreferences: {
@@ -131,6 +140,9 @@ module.exports = class DotnetRunnerApp {
         if (!eixstingApps || eixstingApps.length === 0) {
             this._preferencesOnCLick();
         }
+
+        if (displayReleaseNotes)
+            this._mainWindow.once('ready-to-show', () => this._displayReleaseNotes());
 
         return this;
     }
