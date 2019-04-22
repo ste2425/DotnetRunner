@@ -40,25 +40,27 @@ module.exports = class Dropdown extends webComponentBaseFactory(HTMLElement) {
          * @private
          */
         this._hideTimeout;
+
+        const trigger = shadow.querySelector('.trigger'),
+            dropDownMenu = shadow.querySelector('.dropdown-menu');
         
-        shadow.querySelector('.trigger').addEventListener('click', () => {
+        trigger.addEventListener('click', () => {
             this._display();
         });
 
-        shadow.querySelector('.trigger').addEventListener('blur', () => {
+        trigger.addEventListener('blur', () => {
             this._hide();
         });
 
-
-        shadow.querySelector('.dropdown-menu').addEventListener('focusin', (e) => {
+        dropDownMenu.addEventListener('focusin', (e) => {
             this._display();
         });
 
-        shadow.querySelector('.dropdown-menu').addEventListener('focusout', (e) => {
+        dropDownMenu.addEventListener('focusout', (e) => {
             this._hide();
         });
 
-        shadow.querySelector('.dropdown-menu').addEventListener('click', (e) => {
+        dropDownMenu.addEventListener('click', (e) => {
             this._hide();
         });        
         
@@ -77,6 +79,16 @@ module.exports = class Dropdown extends webComponentBaseFactory(HTMLElement) {
         this.shadowRoot.querySelector('.trigger').textContent = value;
     }
 
+    in(elem) {
+        var bounding = elem.getBoundingClientRect();
+        return (
+            bounding.top >= 0 &&
+            bounding.left >= 0 &&
+           // bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
     set active(value) {
         if (!this.shadowRoot)
             return;
@@ -87,10 +99,18 @@ module.exports = class Dropdown extends webComponentBaseFactory(HTMLElement) {
 
         if (value) {
             elem.classList.add('visible');
+            if (!this.in(elem))
+                elem.classList.add('right');
+
             this.shadowRoot.querySelector('.dropdown').classList.add('show');
+
+            this.classList.add('open');
         } else {
             elem.classList.remove('visible');
+            elem.classList.remove('right');
             this.shadowRoot.querySelector('.dropdown').classList.remove('show');
+
+            this.classList.remove('open');
         }
     }
 

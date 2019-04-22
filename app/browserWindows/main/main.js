@@ -5,6 +5,7 @@ const { showYesNoDialogAsync, showMessageDialogAsync } = require('../../utils/di
 const { stopAllDotnetProcessesAsync, countRunningDotnetProcessesAsync } = require('../../tasks');
 const { getApplications } = require('../../data/applicationStore');
 const Runner = require('../../Components/runner/Runner');
+const { shell } = require('electron');
 
 const runningProccessesCounter = require('../../workers/runningProcesses/runningProcesses');
 
@@ -22,10 +23,20 @@ ipcRenderer.on('reload-data', onReloadDataIPC);
 
 ipcRenderer.on('display-release-notes', onDisplayReleaseNotes);
 
+ipcRenderer.on('start-all', onStartAll);
+
+ipcRenderer.on('stop-all', onTerminateAll);
+
+ipcRenderer.on('clear-all', onClearAll);
+
+ipcRenderer.on('purge', onPurgeClick);
+
 function onDomContentLoaded() {
-    document.querySelector('.purge').addEventListener('click', onPurgeClick);
-    document.querySelector('.start-all').addEventListener('click', onStartAll);
-    document.querySelector('.terminate-all').addEventListener('click', onTerminateAll);
+    document.querySelector('.runningProcessCount').addEventListener('click', onPurgeClick);
+
+    document.querySelector('#github').addEventListener('click', () => {
+        shell.openExternal('https://github.com/ste2425/DotnetRunner');
+    });
 
     loadData();
 }
@@ -104,6 +115,10 @@ async function onTerminateAll() {
     const promises = apps.map(x => x.component.onTerminate());
 
     return Promise.all(promises);
+}
+
+function onClearAll() {
+    apps.forEach(a => a.component.clearData());
 }
 
 

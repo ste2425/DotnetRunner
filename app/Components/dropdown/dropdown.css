@@ -1,3 +1,18 @@
 .dropdown-menu.visible {
     display: block;
 }
+
+.dropdown-menu.visible.right {
+    right: 0px;
+    left: initial !important;
+}
+
+:host(.group-left) .dropdown-toggle {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+:host(.group-right) .dropdown-toggle {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}

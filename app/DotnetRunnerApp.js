@@ -1,5 +1,6 @@
 const { BrowserWindow, Menu } = require('electron');
 const { getApplications } = require('./data/applicationStore');
+const { shell } = require('electron');
 
 module.exports = class DotnetRunnerApp {
     /**
@@ -57,7 +58,7 @@ module.exports = class DotnetRunnerApp {
 
         prefWindow.on('close', () => {
             this._preferencesOpen = false;
-            this._mainWindow.webContents.send('reload-data');
+            this._sendMessage('reload-data');
         });
 
         prefWindow.once('ready-to-show', () => {
@@ -80,13 +81,39 @@ module.exports = class DotnetRunnerApp {
         const template = [
             {
                 label: 'Preferences',
-                click: this._preferencesOnCLick.bind(this)
-            }, 
-            {
+                submenu: [{
+                    label: 'Configure Applicaions',                    
+                    click: this._preferencesOnCLick.bind(this)
+                }]
+            }, {
+                label: 'Tasks',
+                submenu: [{
+                    label: 'Start all',
+                    accelerator: 'Ctrl+s',
+                    click: this._startAllApps.bind(this)
+                }, {
+                    label: 'Stop all',
+                    accelerator: 'Ctrl+Shift+S',
+                    click: this._stopAllApps.bind(this)
+                }, {
+                    label: 'Clear all',
+                    accelerator: 'Ctrl+Shift+C',
+                    click: this._clearAllApps.bind(this)
+                }, {
+                    label: 'Purge',
+                    accelerator: 'Ctrl+Shift+P',
+                    click: () => this._sendMessage('purge')
+                }]
+            }, {
                 label: 'Help',
                 submenu: [{
                     label: 'Release Notes',
                     click: this._displayReleaseNotes.bind(this)
+                }, {
+                   label: 'Log an Issue',
+                   click() {
+                       shell.openExternal('https://github.com/ste2425/DotnetRunner/issues');
+                   } 
                 }, {
                     label: 'Toggle Developer Tools',
                     accelerator: 'Ctrl+Shift+I',
@@ -99,7 +126,23 @@ module.exports = class DotnetRunnerApp {
     }
 
     _displayReleaseNotes() {
-        this._mainWindow.webContents.send('display-release-notes');
+        this._sendMessage('display-release-notes');
+    }
+
+    _startAllApps() {
+        this._sendMessage('start-all');
+    }
+
+    _stopAllApps() {
+        this._sendMessage('stop-all');
+    }
+
+    _clearAllApps() {
+        this._sendMessage('clear-all');
+    }
+
+    _sendMessage(message) {
+        this._mainWindow.send(message);
     }
 
     /**
