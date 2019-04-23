@@ -5,27 +5,48 @@ const { showYesNoDialogAsync, showMessageDialogAsync } = require('../../utils/di
 const { stopAllDotnetProcessesAsync, countRunningDotnetProcessesAsync } = require('../../tasks');
 const { getApplications } = require('../../data/applicationStore');
 const Runner = require('../../Components/runner/Runner');
+const { shell } = require('electron');
+
+const ipcMessages = require('../../ipcMessages');
 
 const runningProccessesCounter = require('../../workers/runningProcesses/runningProcesses');
 
 runningProccessesCounter
     .start()
-    .on(function({ data }) {
-        document.querySelector('.runningProcessCount').textContent = data;
+    .on('data', function(count) {
+        document.querySelector('.runningProcessCount').textContent = count;
     });
 
 let apps = [];
 
 document.addEventListener('DOMContentLoaded', onDomContentLoaded);
 
-ipcRenderer.on('reload-data', onReloadDataIPC);
+ipcRenderer.on(ipcMessages.reloadApplications, onReloadDataIPC);
+
+ipcRenderer.on(ipcMessages.displayReleaseNotes, onDisplayReleaseNotes);
+
+ipcRenderer.on(ipcMessages.startAllApplications, onStartAll);
+
+ipcRenderer.on(ipcMessages.stopAllApplications, onTerminateAll);
+
+ipcRenderer.on(ipcMessages.clearAllApplicationLogs, onClearAll);
+
+ipcRenderer.on(ipcMessages.purgeRunningProcesses, onPurgeClick);
 
 function onDomContentLoaded() {
-    document.querySelector('.purge').addEventListener('click', onPurgeClick);
-    document.querySelector('.start-all').addEventListener('click', onStartAll);
-    document.querySelector('.terminate-all').addEventListener('click', onTerminateAll);
+    document.querySelector('.runningProcessCount').addEventListener('click', onPurgeClick);
+
+    document.querySelector('#github').addEventListener('click', () => {
+        shell.openExternal('https://github.com/ste2425/DotnetRunner');
+    });
 
     loadData();
+}
+
+function onDisplayReleaseNotes() {
+    const releaseNotesModal = document.querySelector('releasenotes-modal');
+
+    releaseNotesModal.display();
 }
 
 async function onReloadDataIPC() {
@@ -55,7 +76,7 @@ async function onReloadDataIPC() {
                 }
             });
     }
-}
+} 
 
 (() => {
     let closing = false;
@@ -84,6 +105,8 @@ async function onPurgeClick() {
 
     if (kill)
        await stopAllDotnetProcessesAsync();
+
+    runningProccessesCounter.triggerNow();
 }
 
 async function onStartAll() {
@@ -94,6 +117,10 @@ async function onTerminateAll() {
     const promises = apps.map(x => x.component.onTerminate());
 
     return Promise.all(promises);
+}
+
+function onClearAll() {
+    apps.forEach(a => a.component.clearData());
 }
 
 

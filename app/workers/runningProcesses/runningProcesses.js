@@ -1,28 +1,28 @@
-/**
- * @type {Worker}
- */
-let instance;
+const { WebWorkerHost } = require('../workerManagers');
+
+const hostManager = new WebWorkerHost('../../workers/runningProcesses/runningProcessWorker.js');
 
 module.exports.start = function () {
-    instance = new Worker('../../workers/runningProcesses/runningProcessWorker.js');
+    hostManager.emit('start');
 
     return this;
 }
 
 module.exports.stop = function () {
-    instance.terminate();
+    hostManager.emit('stop');
+    
+    hostManager.terminate();
+    return this;
+}
+
+module.exports.on = function (...args) {    
+    hostManager.on(...args)
 
     return this;
 }
 
-module.exports.on = function (...args) {
-    instance.addEventListener('message', ...args);
-
-    return this;
-}
-
-module.exports.off = function (...args) {
-    instance.removeEventListener('message', ...args);
+module.exports.triggerNow = function () {
+    hostManager.emit('triggerNow');
 
     return this;
 }

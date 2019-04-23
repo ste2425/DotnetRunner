@@ -1,14 +1,18 @@
 <link rel="stylesheet" href="../../../node_modules/bootstrap-css-only/css/bootstrap.css">
-
 <link rel="stylesheet" href="../../../node_modules/xterm/dist/xterm.css" />
 
-<h1 class="name"></h1>
+<div class="d-flex align-items-center justify-content-between flex-row">
+    <h1 class="name"></h1>    
+    
+    <div class="btn-group">
+        <button class="start btn btn-sm btn-primary">Start</button>
+        <drop-down class="group-left">
+            <button class="terminate btn-sm" disabled>Stop</button>
+            <button class="clear-log btn-sm">Clear Log</button>
+        </drop-down>
+    </div>
+</div>
 <div class="d-flex justify-content-between align-items-center pb-2">
     <span class="state badge"></span>
-    <div class="btn-group">
-        <button class="start btn-sm btn btn-success">Start</button>
-        <button class="terminate btn-sm btn btn-danger" disabled>Stop</button>
-        <button class="clear-log btn-sm btn btn-light">Clear Log</button>
-    </div>
 </div>
 <div class="terminal"></div>

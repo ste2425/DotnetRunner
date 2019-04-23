@@ -1,5 +1,7 @@
 const { BrowserWindow, Menu } = require('electron');
 const { getApplications } = require('./data/applicationStore');
+const { shell } = require('electron');
+const ipcMessages = require('./ipcMessages');
 
 module.exports = class DotnetRunnerApp {
     /**
@@ -48,7 +50,6 @@ module.exports = class DotnetRunnerApp {
             parent: this._mainWindow,
             modal: true,
             show: false
-          //  autoHideMenuBar: true
         });
 
         prefWindow.setMenu(this.getPreferencesMenu());
@@ -57,7 +58,7 @@ module.exports = class DotnetRunnerApp {
 
         prefWindow.on('close', () => {
             this._preferencesOpen = false;
-            this._mainWindow.webContents.send('reload-data');
+            this._sendMessage(ipcMessages.reloadApplications);
         });
 
         prefWindow.once('ready-to-show', () => {
@@ -80,11 +81,40 @@ module.exports = class DotnetRunnerApp {
         const template = [
             {
                 label: 'Preferences',
-                click: this._preferencesOnCLick.bind(this)
-            }, 
-            {
+                submenu: [{
+                    label: 'Configure Applicaions',                    
+                    click: this._preferencesOnCLick.bind(this)
+                }]
+            }, {
+                label: 'Tasks',
+                submenu: [{
+                    label: 'Start all',
+                    accelerator: 'Ctrl+s',
+                    click: this._startAllApps.bind(this)
+                }, {
+                    label: 'Stop all',
+                    accelerator: 'Ctrl+Shift+S',
+                    click: this._stopAllApps.bind(this)
+                }, {
+                    label: 'Clear all',
+                    accelerator: 'Ctrl+Shift+C',
+                    click: this._clearAllApps.bind(this)
+                }, {
+                    label: 'Purge',
+                    accelerator: 'Ctrl+Shift+P',
+                    click: this._purge.bind(this)
+                }]
+            }, {
                 label: 'Help',
                 submenu: [{
+                    label: 'Release Notes',
+                    click: this._displayReleaseNotes.bind(this)
+                }, {
+                   label: 'Log an Issue',
+                   click() {
+                       shell.openExternal('https://github.com/ste2425/DotnetRunner/issues');
+                   } 
+                }, {
                     label: 'Toggle Developer Tools',
                     accelerator: 'Ctrl+Shift+I',
                     click: this._devToolsOnClick.bind(this)
@@ -93,6 +123,30 @@ module.exports = class DotnetRunnerApp {
         ];
     
        return this._menu.buildFromTemplate(template);
+    }
+
+    _displayReleaseNotes() {
+        this._sendMessage(ipcMessages.displayReleaseNotes);
+    }
+
+    _startAllApps() {
+        this._sendMessage(ipcMessages.startAllApplications);
+    }
+
+    _stopAllApps() {
+        this._sendMessage(ipcMessages.stopAllApplications);
+    }
+
+    _clearAllApps() {
+        this._sendMessage(ipcMessages.clearAllApplicationLogs);
+    }
+
+    _purge() {
+        this._sendMessage(ipcMessages.purgeRunningProcesses);
+    }
+
+    _sendMessage(message) {
+        this._mainWindow.send(message);
     }
 
     /**
@@ -113,7 +167,9 @@ module.exports = class DotnetRunnerApp {
        return this._menu.buildFromTemplate(template);        
     }
 
-    run() {
+    run({
+        displayReleaseNotes
+    } = {}) {
         this._mainWindow = new BrowserWindow({
             show: false,
             webPreferences: {
@@ -131,6 +187,9 @@ module.exports = class DotnetRunnerApp {
         if (!eixstingApps || eixstingApps.length === 0) {
             this._preferencesOnCLick();
         }
+
+        if (displayReleaseNotes)
+            this._mainWindow.once('ready-to-show', () => this._displayReleaseNotes());
 
         return this;
     }

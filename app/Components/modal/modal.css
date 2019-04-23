@@ -1,0 +1,28 @@
+:host {
+    display: block;
+}
+
+.modal {
+    display: block;
+    opacity: 0;
+    overflow: auto;
+}
+
+.modal:not(.show), .modal-backdrop:not(.show) {
+    z-index: -1;
+}
+
+.modal.show {
+    opacity: 1;
+}
+
+.modal-dialog {
+    background-color: white;
+}
+
+
+@media (min-width: 576px) and (max-width: 992px){
+    .modal-dialog {
+        max-width: calc(100% - 10px);
+    }
+}

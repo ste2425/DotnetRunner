@@ -1,12 +1,10 @@
 const { killDotnetProcessAsync, startDotnetProcess } = require('../../tasks');
-const WebComponentBaseFactory = require('../WebComponentBaseFactory');
 const Terminal = require('xterm').Terminal;
 const pty = require('node-pty');
-//const fit = require('xterm/lib/addons/fit/fit');
 
-//Terminal.apply(fit);
+const WebComponentBase = require('../WebComponentBase');
 
-module.exports = class RunnerElement extends WebComponentBaseFactory(HTMLElement) {
+module.exports = class RunnerElement extends WebComponentBase {
     constructor() {
         super();
 

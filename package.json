@@ -1,6 +1,6 @@
 {
   "name": "dotnet-runner",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Electron application to launch dotnet applications",
   "main": "startup.js",
   "scripts": {
@@ -22,6 +22,10 @@
     "electron-rebuild": "^1.8.4",
     "electron-updater": "^4.0.6",
     "node-pty": "^0.8.1",
-    "xterm": "^3.12.0"
-  }
+    "xterm": "^3.12.0",
+    "markdown-it": "^8.4.2"
+  },
+  "files": [
+    "ReleaseNotes.md"
+  ]
 }
