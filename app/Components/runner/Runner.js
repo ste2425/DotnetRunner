@@ -46,7 +46,7 @@ module.exports = class RunnerElement extends WebComponentBase {
         clearLog.addEventListener('click', () => this.clearData());
 
         this._terminalProcess = new Terminal();
-        this._ptyProcess = pty.spawn('cmd.exe', [], {
+        this._ptyProcess = pty.spawn('cmd.exe', ['/c', 'dotnet', '--info'], {
             name: 'xterm-color',
             cwd: process.cwd(),
             env: process.env
