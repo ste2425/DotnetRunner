@@ -1,12 +1,11 @@
 const { showOpenDialog } = require('../../utils/dialog');
 const fs = require('fs');
-const webComponentBaseFactory = require('../WebComponentBaseFactory');
+const WebComponentBase = require('../WebComponentBase');
 
 /**
  * Represents a Dotnet project selector control.
- * @extends {HTMLElement}
  */
-module.exports = class DotnetProjectSelector extends webComponentBaseFactory(HTMLElement) {
+module.exports = class DotnetProjectSelector extends WebComponentBase {
     
     connectedCallback() {
         /* 

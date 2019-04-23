@@ -1,9 +1,9 @@
-const WebComponentBaseFactory = require('../WebComponentBaseFactory');
+const WebComponentBase = require('../WebComponentBase');
 
 /**
- * @extends HTMLElement
+ * Represents a modal component
  */
-module.exports = class ModalElement extends WebComponentBaseFactory(HTMLElement) {
+module.exports = class ModalElement extends WebComponentBase {
     constructor() {
         super();
 

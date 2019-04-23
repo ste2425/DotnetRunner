@@ -1,9 +1,7 @@
 const { killDotnetProcessAsync, startDotnetProcess } = require('../../tasks');
-const fs = require('fs');
-const path = require('path');
-const WebComponentBaseFactory = require('../WebComponentBaseFactory');
+const WebComponentBase = require('../WebComponentBase');
 
-module.exports = class RunnerElement extends WebComponentBaseFactory(HTMLElement) {
+module.exports = class RunnerElement extends WebComponentBase {
     constructor() {
         super();
 

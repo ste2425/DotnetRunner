@@ -1,7 +1,10 @@
 
-const WebComponentBaseFactory = require('../WebComponentBaseFactory');
+const WebComponentBase = require('../WebComponentBase');
 
-module.exports = class ReleaseNotesModal extends WebComponentBaseFactory(HTMLElement) {
+/**
+ * Display the release notes viewer within a modal.
+ */
+module.exports = class ReleaseNotesModal extends WebComponentBase {
     connectedCallback() {        
         /**
          * @type {ShadowRoot}
