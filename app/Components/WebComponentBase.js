@@ -35,7 +35,7 @@ module.exports = class WebComponentBase extends HTMLElement {
       .some(el=> el.nextSibling);
 
     const callback = (this.childrenAvailableCallback && typeof(this.childrenAvailableCallback) === 'function') ?
-      this.childrenAvailableCallback :
+      this.childrenAvailableCallback.bind(this) :
       () => {};
 
     // check if the parser has already passed the end tag of the component
