@@ -1,6 +1,7 @@
 const { BrowserWindow, Menu } = require('electron');
 const { getApplications } = require('./data/applicationStore');
 const { shell } = require('electron');
+const ipcMessages = require('./ipcMessages');
 
 module.exports = class DotnetRunnerApp {
     /**
@@ -49,7 +50,6 @@ module.exports = class DotnetRunnerApp {
             parent: this._mainWindow,
             modal: true,
             show: false
-          //  autoHideMenuBar: true
         });
 
         prefWindow.setMenu(this.getPreferencesMenu());
@@ -58,7 +58,7 @@ module.exports = class DotnetRunnerApp {
 
         prefWindow.on('close', () => {
             this._preferencesOpen = false;
-            this._sendMessage('reload-data');
+            this._sendMessage(ipcMessages.reloadApplications);
         });
 
         prefWindow.once('ready-to-show', () => {
@@ -102,7 +102,7 @@ module.exports = class DotnetRunnerApp {
                 }, {
                     label: 'Purge',
                     accelerator: 'Ctrl+Shift+P',
-                    click: () => this._sendMessage('purge')
+                    click: this._purge.bind(this)
                 }]
             }, {
                 label: 'Help',
@@ -126,19 +126,23 @@ module.exports = class DotnetRunnerApp {
     }
 
     _displayReleaseNotes() {
-        this._sendMessage('display-release-notes');
+        this._sendMessage(ipcMessages.displayReleaseNotes);
     }
 
     _startAllApps() {
-        this._sendMessage('start-all');
+        this._sendMessage(ipcMessages.startAllApplications);
     }
 
     _stopAllApps() {
-        this._sendMessage('stop-all');
+        this._sendMessage(ipcMessages.stopAllApplications);
     }
 
     _clearAllApps() {
-        this._sendMessage('clear-all');
+        this._sendMessage(ipcMessages.clearAllApplicationLogs);
+    }
+
+    _purge() {
+        this._sendMessage(ipcMessages.purgeRunningProcesses);
     }
 
     _sendMessage(message) {

@@ -1,10 +1,12 @@
-const WebComponentBaseFactory = require('../WebComponentBaseFactory'),
+const WebComponentBase = require('../WebComponentBase'),
     md = require('markdown-it')(),
     fs = require('fs'),
     path = require('path');
 
-module.exports = class ReleaseNotesViewer extends WebComponentBaseFactory(HTMLElement) {
-
+/**
+ * Parses and display the Release Notes MD file.
+ */
+module.exports = class ReleaseNotesViewer extends WebComponentBase {
     connectedCallback() {
         /**
          * @type {ShadowRoot}

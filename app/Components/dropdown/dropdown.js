@@ -1,12 +1,9 @@
-const { showOpenDialog } = require('../../utils/dialog');
-const fs = require('fs');
-const webComponentBaseFactory = require('../WebComponentBaseFactory');
+const WebComponentBase = require('../WebComponentBase');
 
 /**
  * Represents a Dropdown control.
- * @extends {HTMLElement}
  */
-module.exports = class Dropdown extends webComponentBaseFactory(HTMLElement) {
+module.exports = class Dropdown extends WebComponentBase {
     
     static get observedAttributes() {
         return ['active', 'label'];
@@ -18,6 +15,10 @@ module.exports = class Dropdown extends webComponentBaseFactory(HTMLElement) {
     }
 
     _hide() {
+        /*
+            Wrap in a timeout because of events.
+            Otherwise when focusing on child the blur from trigger would close.
+        */
         clearTimeout(this._hideTimeout);
         this._hideTimeout = setTimeout(() => {
             this.setAttribute('active', false);
@@ -79,12 +80,13 @@ module.exports = class Dropdown extends webComponentBaseFactory(HTMLElement) {
         this.shadowRoot.querySelector('.trigger').textContent = value;
     }
 
-    in(elem) {
+    dropdownHasSpace(elem) {
         var bounding = elem.getBoundingClientRect();
+        // TODO: Check for vertical space.
+        // bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
         return (
             bounding.top >= 0 &&
             bounding.left >= 0 &&
-           // bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
             bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
         );
     }
@@ -99,7 +101,7 @@ module.exports = class Dropdown extends webComponentBaseFactory(HTMLElement) {
 
         if (value) {
             elem.classList.add('visible');
-            if (!this.in(elem))
+            if (!this.dropdownHasSpace(elem))
                 elem.classList.add('right');
 
             this.shadowRoot.querySelector('.dropdown').classList.add('show');

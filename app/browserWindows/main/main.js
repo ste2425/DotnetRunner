@@ -7,6 +7,8 @@ const { getApplications } = require('../../data/applicationStore');
 const Runner = require('../../Components/runner/Runner');
 const { shell } = require('electron');
 
+const ipcMessages = require('../../ipcMessages');
+
 const runningProccessesCounter = require('../../workers/runningProcesses/runningProcesses');
 
 runningProccessesCounter
@@ -19,17 +21,17 @@ let apps = [];
 
 document.addEventListener('DOMContentLoaded', onDomContentLoaded);
 
-ipcRenderer.on('reload-data', onReloadDataIPC);
+ipcRenderer.on(ipcMessages.reloadApplications, onReloadDataIPC);
 
-ipcRenderer.on('display-release-notes', onDisplayReleaseNotes);
+ipcRenderer.on(ipcMessages.displayReleaseNotes, onDisplayReleaseNotes);
 
-ipcRenderer.on('start-all', onStartAll);
+ipcRenderer.on(ipcMessages.startAllApplications, onStartAll);
 
-ipcRenderer.on('stop-all', onTerminateAll);
+ipcRenderer.on(ipcMessages.stopAllApplications, onTerminateAll);
 
-ipcRenderer.on('clear-all', onClearAll);
+ipcRenderer.on(ipcMessages.clearAllApplicationLogs, onClearAll);
 
-ipcRenderer.on('purge', onPurgeClick);
+ipcRenderer.on(ipcMessages.purgeRunningProcesses, onPurgeClick);
 
 function onDomContentLoaded() {
     document.querySelector('.runningProcessCount').addEventListener('click', onPurgeClick);
