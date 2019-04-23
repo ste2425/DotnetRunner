@@ -34,16 +34,20 @@ module.exports = class WebComponentBase extends HTMLElement {
     const hasNextSiblings = () => [this, ...this.parentNodes]
       .some(el=> el.nextSibling);
 
+    const callback = (this.childrenAvailableCallback && typeof(this.childrenAvailableCallback) === 'function') ?
+      this.childrenAvailableCallback :
+      () => {};
+
     // check if the parser has already passed the end tag of the component
     // in which case this element, or one of its parents, should have a nextSibling
     // if not (no whitespace at all between tags and no nextElementSiblings either)
     // resort to DOMContentLoaded or load having triggered
     if (hasNextSiblings() || document.readyState !== 'loading') {
-      this.childrenAvailableCallback();
+      callback();
     } else {
       this.mutationObserver = new MutationObserver(() => {
         if (hasNextSiblings() || document.readyState !== 'loading') {
-          this.childrenAvailableCallback()
+          callback();
           this.mutationObserver.disconnect()
         }
       });
