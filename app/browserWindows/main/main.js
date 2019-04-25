@@ -138,6 +138,7 @@ function loadData() {
 
         el.name = x.name;
         el.cwd = x.cwd;
+        el.runCommandArguments = x.commandArgs;
 
         container.appendChild(el);
 

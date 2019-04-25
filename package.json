@@ -1,6 +1,6 @@
 {
   "name": "dotnet-runner",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Electron application to launch dotnet applications",
   "main": "startup.js",
   "scripts": {
@@ -19,7 +19,8 @@
     "bootstrap-css-only": "^4.3.1",
     "electron-is-dev": "^1.0.1",
     "electron-updater": "^4.0.6",
-    "markdown-it": "^8.4.2"
+    "markdown-it": "^8.4.2",
+    "markdown-it-attrs": "^2.3.3"
   },
   "files": [
     "ReleaseNotes.md"

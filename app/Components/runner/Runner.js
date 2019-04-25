@@ -10,6 +10,8 @@ module.exports = class RunnerElement extends WebComponentBase {
 
         this.cwd = '';
 
+        this.runCommandArguments = '';
+
         this._name = '';
 
         this.setState(RunnerElement.states.stopped);
@@ -76,7 +78,7 @@ module.exports = class RunnerElement extends WebComponentBase {
 
         this.setState(RunnerElement.states.starting);
 
-        this._runningProccess = startDotnetProcess(this.cwd, true);
+        this._runningProccess = startDotnetProcess(this.cwd, true, this.runCommandArguments);
 
         this._runningProccess.on('close', () => {
             this.setState(RunnerElement.states.stopped);

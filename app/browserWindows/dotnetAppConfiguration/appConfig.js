@@ -28,12 +28,13 @@ function loadApps() {
 
     const template = document.querySelector('#dotnetAppRead');
 
-    apps.forEach(({ name, cwd }, i) => {
+    apps.forEach(({ name, cwd, commandArgs }, i) => {
         const clone = document.importNode(template.content, true);
 
         clone.querySelector('.app-name').textContent = name;
         clone.querySelector('.project-path').textContent = cwd;
         clone.querySelector("[type=hidden]").value = i;
+        clone.querySelector(".command-args").textContent = commandArgs;
 
         document.querySelector('.existing').appendChild(clone);
     });
@@ -45,6 +46,7 @@ function onEditBtnClick(e) {
     const index = container.querySelector('.index').value;
     const name = container.querySelector('.app-name').textContent;
     const projectPath = container.querySelector('.project-path').textContent;
+    const commandArgs = container.querySelector('.command-args').textContent;
 
     while(container.firstChild) {
         container.removeChild(container.firstChild);
@@ -58,6 +60,7 @@ function onEditBtnClick(e) {
     container.querySelector('.app-name span').textContent = name;
     container.querySelector('[name="appName"]').value = name;
     container.querySelector('[name="projectPath"]').value = projectPath;
+    container.querySelector('[name="commandArgs"]').value = commandArgs;
     container.querySelector("[type=hidden]").value = index;
 }
 
@@ -80,7 +83,8 @@ function onFormSubmit(e) {
     const index = data.get('appIndex');
     const payload = {
         name: data.get('appName'),
-        cwd: data.get('projectPath')
+        cwd: data.get('projectPath'),
+        commandArgs: data.get('commandArgs')
     };
 
     const items = applicationStore.getApplications();
