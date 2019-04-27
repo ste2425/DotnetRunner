@@ -1,9 +1,10 @@
-## Version 0.1.1
+## Version 0.1.2
 ---
 
 Release highlights:
 
 * Added link to wiki
+* Fixed bug where extra command line arguments where mandatory
 
 ---
 

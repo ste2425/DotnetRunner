@@ -1,6 +1,6 @@
 {
   "name": "dotnet-runner",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Electron application to launch dotnet applications",
   "main": "startup.js",
   "scripts": {
