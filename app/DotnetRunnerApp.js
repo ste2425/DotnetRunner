@@ -110,6 +110,11 @@ module.exports = class DotnetRunnerApp {
                     label: 'Release Notes',
                     click: this._displayReleaseNotes.bind(this)
                 }, {
+                    label: 'Wiki',
+                    click() {
+                        shell.openExternal('https://github.com/ste2425/DotnetRunner/wiki');
+                    } 
+                 }, {
                    label: 'Log an Issue',
                    click() {
                        shell.openExternal('https://github.com/ste2425/DotnetRunner/issues');

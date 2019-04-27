@@ -7,7 +7,7 @@ const splashApp = new SplashScreenApp();
 const dotnetApp = new DotnetRunnerApp(BrowserWindow, Menu);
 
 splashApp.onReady = function(settings) {
-    dotnetApp.run({ displayReleaseNotes: settings.upgradePerformed })
+    dotnetApp.run({ displayReleaseNotes: false })
         .once('ready-to-show', () => {
             splashApp.close();
             dotnetApp.show();
