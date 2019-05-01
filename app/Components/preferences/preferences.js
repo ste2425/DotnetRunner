@@ -14,9 +14,6 @@ module.exports = class Preferences extends WebComponentBase {
 
         this.applyHTML(shadow, __dirname, 'preferences.html');
 
-        shadow.querySelector('form')
-            .addEventListener('submit', this._onSubmit.bind(this));
-
         const preferences = preferencesStore.getPreferences();
         
         shadow.querySelector('#runAtStartup').checked = preferences.runAtStartup;
@@ -51,8 +48,6 @@ module.exports = class Preferences extends WebComponentBase {
 
         const preferences = preferencesStore.getPreferences();
 
-        this._manageStartUp(runAtStartup);
-
         Object.assign(preferences, {
             runAtStartup,
             waitTimeout: waitTimeout ? parseInt(waitTimeout) : undefined,
@@ -60,6 +55,8 @@ module.exports = class Preferences extends WebComponentBase {
         });
 
         preferencesStore.setPreferences(preferences);
+
+        this._manageStartUp(runAtStartup);
 
         this._emitSaved();
     }
