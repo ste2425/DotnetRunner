@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="../../../node_modules/bootstrap-css-only/css/bootstrap.css">
+
+<modal-element modal-size="large" id="preferences-modal">
+    <h3 slot="modal-header">
+        Preferences
+    </h3>
+    <div class="destination" slot="modal-body"></div>
+    <div slot="modal-footer">
+        <button class="btn btn-primary save-btn">Save</button>
+        <button data-modal-dismiss class="btn btn-sm btn-secondary">Close</button>
+    </div>
+</modal-element>
+
+<template id="preferences-pane-template">
+    <preferences-pane></preferences-pane>
+</template>

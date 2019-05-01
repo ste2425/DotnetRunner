@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="../../../node_modules/bootstrap-css-only/css/bootstrap.css">
+
+<form>
+    <div class="form-check">
+        <input value="1" name="runAtStartup" type="checkbox" class="form-check-input" id="runAtStartup">
+        <label class="form-check-label" for="runAtStartup">Run at startup</label>
+    </div>
+    <div class="form-check">
+        <input value="1" name="autoOpenReleasenotes" type="checkbox" class="form-check-input" id="autoOpenReleasenotes">
+        <label class="form-check-label" for="autoOpenReleasenotes">Open release notes after upgrade</label>
+    </div>
+    <hr>    
+    <div class="form-group">
+      <label for="waitTimeout">Delay between starting each application.</label>
+      <select class="form-control" id="waitTimeout" name="waitTimeout">
+        <option value="0">No delay</option>
+        <option value="2">2 seconds</option>
+        <option value="5">5 seconds</option>
+        <option value="10">10 seconds</option>
+      </select>
+      <small class="form-text text-muted">How long to wait in between starting each application.</small>
+    </div>
+</form>

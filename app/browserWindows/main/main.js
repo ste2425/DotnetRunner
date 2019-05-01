@@ -6,6 +6,7 @@ const { stopAllDotnetProcessesAsync, countRunningDotnetProcessesAsync } = requir
 const { getApplications } = require('../../data/applicationStore');
 const Runner = require('../../Components/runner/Runner');
 const { shell } = require('electron');
+const preferencesStore = require('../../data/preferencesStore');
 
 const ipcMessages = require('../../ipcMessages');
 
@@ -24,6 +25,8 @@ document.addEventListener('DOMContentLoaded', onDomContentLoaded);
 ipcRenderer.on(ipcMessages.reloadApplications, onReloadDataIPC);
 
 ipcRenderer.on(ipcMessages.displayReleaseNotes, onDisplayReleaseNotes);
+
+ipcRenderer.on(ipcMessages.displayPreferences, onDisplayPreferences);
 
 ipcRenderer.on(ipcMessages.startAllApplications, onStartAll);
 
@@ -47,6 +50,12 @@ function onDisplayReleaseNotes() {
     const releaseNotesModal = document.querySelector('releasenotes-modal');
 
     releaseNotesModal.display();
+}
+
+function onDisplayPreferences() {
+    const modal = document.querySelector('preferences-modal');
+
+    modal.display();
 }
 
 async function onReloadDataIPC() {
@@ -110,7 +119,22 @@ async function onPurgeClick() {
 }
 
 async function onStartAll() {
-    apps.forEach(x => x.component.onStart());
+    const pref = preferencesStore.getPreferences();
+
+    if (pref.waitTimeout === 0)
+        apps.forEach(x => x.component.onStart());
+    else 
+        apps.reduce((accu, cur) => {
+            return accu
+                .then(() => 
+                    new Promise((res) => {
+                        cur.component.onStart();
+                        setTimeout(() => {
+                            res();
+                        }, pref.waitTimeout * 1000);
+                    })
+                );
+        }, Promise.resolve());
 }
 
 async function onTerminateAll() {
