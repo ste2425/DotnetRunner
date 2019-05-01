@@ -4,5 +4,6 @@ module.exports = Object.freeze({
     clearAllApplicationLogs: 'clear-all',
     purgeRunningProcesses: 'purge',
     reloadApplications: 'reload-apps',
-    displayReleaseNotes: 'display-release-notes'
+    displayReleaseNotes: 'display-release-notes',
+    displayPreferences: 'display-preferences'
 });
