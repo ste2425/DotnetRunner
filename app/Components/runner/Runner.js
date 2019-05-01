@@ -33,41 +33,38 @@ module.exports = class RunnerElement extends WebComponentBase {
         if (this.state != undefined)
             this.setState(this.state);
 
-        const start = shadow.querySelector('.start');
-        const stop = shadow.querySelector('.terminate');
         const clearLog = shadow.querySelector('.clear-log');
 
-        start.addEventListener('click', (e) => this.onStart());
-        stop.addEventListener('click', (e) => this.onTerminate());
         clearLog.addEventListener('click', () => this.clearData());
+
+        shadow.querySelector('.action').addEventListener('click', this._onToggle.bind(this));
     }
 
-    _enableStart() {
+    _enableAction() {
         if (!this.shadowRoot)
             return;
 
-        this.shadowRoot.querySelector('.start').removeAttribute('disabled');
-    }
-    
-    _disableStart() {
-        if (!this.shadowRoot)
-            return;
-
-        this.shadowRoot.querySelector('.start').setAttribute('disabled', 'disabled');
-    }
-
-    _enableStop() {
-        if (!this.shadowRoot)
-            return;
-
-        this.shadowRoot.querySelector('.terminate').removeAttribute('disabled');
+        this.shadowRoot.querySelector('.action').removeAttribute('disabled');
     }
     
-    _disableStop() {
+    _disableAction() {
         if (!this.shadowRoot)
             return;
 
-        this.shadowRoot.querySelector('.terminate').setAttribute('disabled', 'disabled');
+        this.shadowRoot.querySelector('.action').setAttribute('disabled', 'disabled');
+    }
+
+    _onToggle() {
+        if (this.state !== RunnerElement.states.stopped && this.state !== RunnerElement.states.running)
+            return;
+
+        const isRunning = this.state !== RunnerElement.states.stopped;
+
+        if (isRunning) {
+            this.onTerminate();
+        } else {
+            this.onStart();
+        }
     }
 
     onStart() {
@@ -138,8 +135,7 @@ module.exports = class RunnerElement extends WebComponentBase {
     }
 
     setState(state) {
-        this._disableStart();
-        this._disableStop();
+        this._disableAction();
 
         this.state = state;
         
@@ -147,26 +143,30 @@ module.exports = class RunnerElement extends WebComponentBase {
             return;
 
         const stateEl = this.shadowRoot.querySelector('.state');
+        const actionBtn = this.shadowRoot.querySelector('.action');
 
         switch(state) {
             case RunnerElement.states.starting:
                 stateEl.textContent = 'Starting';
                 stateEl.className = 'state badge badge-info';
-                this._enableStop();
+                actionBtn.textContent = 'Stop';
             break;
             case RunnerElement.states.running:
                 stateEl.textContent = 'Running';
                 stateEl.className = 'state badge badge-success';
-                this._enableStop();
+                actionBtn.textContent = 'Stop';
+                this._enableAction();
             break;
             case RunnerElement.states.stopping:
                 stateEl.textContent = 'Stopping';
                 stateEl.className = 'state badge badge-info';
+                actionBtn.textContent = 'Start';
             break;
             case RunnerElement.states.stopped:
                 stateEl.textContent = 'Stopped';
                 stateEl.className = 'state badge badge-secondary';
-                this._enableStart();
+                this._enableAction();
+                actionBtn.textContent = 'Start';
             break;
         }
     }
