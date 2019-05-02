@@ -96,7 +96,7 @@ async function onReloadDataIPC() {
             e.returnValue = false;
 
             onTerminateAll()
-                .then(() => {
+                .finally(() => {
                     remote.getCurrentWindow().close();
                 });
         }
