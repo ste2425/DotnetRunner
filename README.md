@@ -1,4 +1,6 @@
-# Dotnet Runner
+<p align="center">
+    <img src="https://github.com/ste2425/DotnetRunner/wiki/assets/logo.png" width="150" alt="Logo">
+</p>
 
 Electron app to manage running multiple Dotnet Core applications.
 
