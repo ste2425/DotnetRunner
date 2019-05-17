@@ -17,6 +17,8 @@ The latest release can be donwloaded from https://github.com/ste2425/DotnetRunne
 * Install dependencies (Note, this can take a while, add -verbose to see further progress): `npm i`
 * Start App: `npm start`
 
+![Application Image](https://github.com/ste2425/DotnetRunner/wiki/assets/homepage.png)
+
 ---
 
 * *Do* expect to be able to run multiple dotnet Apps from a single button click
