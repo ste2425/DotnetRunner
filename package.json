@@ -14,12 +14,12 @@
   "repository": "https://github.com/ste2425/DotnetRunner",
   "devDependencies": {
     "electron": "^4.0.8",
-    "electron-builder": "^20.39.0"
+    "electron-builder": "^20.39.0",
+    "electron-rebuild": "^1.8.4"
   },
   "dependencies": {
     "bootstrap-css-only": "^4.3.1",
     "electron-is-dev": "^1.0.1",
-    "electron-rebuild": "^1.8.4",
     "electron-updater": "^4.0.6",
     "node-pty": "^0.8.1",
     "xterm": "^3.12.0",

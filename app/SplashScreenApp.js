@@ -72,14 +72,12 @@ module.exports = class SplashScreenApp {
             show: false
         });
 
-        
         this._splashWindow
             .loadFile('app/browserWindows/splashScreen/splashScreen.html');
 
         this._splashWindow.once('ready-to-show', () => {
-            //this._splashWindow.show();
-           // autoUpdater.checkForUpdates();
-           this._executeOnReady();
+            this._splashWindow.show();
+            autoUpdater.checkForUpdates();
         });
     }
 
