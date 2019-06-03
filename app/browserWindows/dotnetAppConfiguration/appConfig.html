@@ -22,6 +22,7 @@
         <input type="hidden" class="index" />
         <h3 class="app-name"></h3>
         <div class="project-path"></div>
+        <div class="command-args"></div>
         <button class="delete-btn btn btn-danger">delete</button>
         <button class="edit-btn btn btn-light">Edit</button>
       </div>
@@ -41,6 +42,11 @@
           </dotnet-project-selector>
           <small class="form-text text-muted">The path to the project to run.</small>
         </div>
+        <div class="form-group">
+          <label for="commandArgs">Command line arguments</label>
+          <input type="string" name="commandArgs" class="form-control"/>
+          <small class="form-text text-muted">Additional space deliminated arguments to be passed to the dotnet run command.</small>
+        </div>
         <button type="submit" class="btn btn-primary">Save</button>
         <button type="button" class="btn btn-light button-cancel">Cancel</button>
       </form>
@@ -56,6 +62,11 @@
         <dotnet-project-selector
           name="projectPath"></dotnet-project-selector>
         <small class="form-text text-muted">The path to the project to run. Select the folder that contains the projects .csproj file.</small>
+      </div>
+      <div class="form-group">
+        <label for="commandArgs">Command line arguments</label>
+        <input type="string" name="commandArgs" class="form-control"/>
+        <small class="form-text text-muted">Additional space deliminated arguments to be passed to the dotnet run command.</small>
       </div>
       <button type="submit" class="btn btn-primary">Insert</button>
     </form>

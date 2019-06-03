@@ -49,16 +49,19 @@ module.exports.killDotnetProcessAsync = function (pid) {
 /**
  * @param {string} projectPath - Path to the project to run
  * @param {boolean} watch - If set it will execute a watch
+ * @param {string} commandArgs - Extra arguments to pass to the run command
  * 
  * @returns {ChildProcess}
  */
-module.exports.startDotnetProcess = function (projectPath, watch) {
+module.exports.startDotnetProcess = function (projectPath, watch, commandArgs = '') {
     const args = [];
 
     if (watch)
         args.push('watch');
 
     args.push('run');
+
+    args.push(...commandArgs.split(' '));
 
     return spawn('dotnet', args, {
         cwd: projectPath,

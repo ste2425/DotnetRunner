@@ -80,10 +80,13 @@ module.exports = class DotnetRunnerApp {
     getMenu() {
         const template = [
             {
-                label: 'Preferences',
+                label: 'Options',
                 submenu: [{
                     label: 'Configure Applicaions',                    
                     click: this._preferencesOnCLick.bind(this)
+                }, {
+                    label: 'Preferences',
+                    click: this._displayPreferences.bind(this)
                 }]
             }, {
                 label: 'Tasks',
@@ -110,6 +113,11 @@ module.exports = class DotnetRunnerApp {
                     label: 'Release Notes',
                     click: this._displayReleaseNotes.bind(this)
                 }, {
+                    label: 'Wiki',
+                    click() {
+                        shell.openExternal('https://github.com/ste2425/DotnetRunner/wiki');
+                    } 
+                 }, {
                    label: 'Log an Issue',
                    click() {
                        shell.openExternal('https://github.com/ste2425/DotnetRunner/issues');
@@ -123,6 +131,10 @@ module.exports = class DotnetRunnerApp {
         ];
     
        return this._menu.buildFromTemplate(template);
+    }
+
+    _displayPreferences() {
+        this._sendMessage(ipcMessages.displayPreferences);
     }
 
     _displayReleaseNotes() {

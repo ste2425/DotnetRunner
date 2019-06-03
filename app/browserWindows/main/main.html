@@ -10,6 +10,8 @@
 
       require(path.resolve(__dirname, '../../Components/releaseNotesViewer/releaseNotesViewer.js')).register();
       require(path.resolve(__dirname, '../../Components/releaseNotesViewer/releaseNotesModal.js')).register();
+      require(path.resolve(__dirname, '../../Components/preferences/preferences.js')).register();
+      require(path.resolve(__dirname, '../../Components/preferences/preferencesModal.js')).register();
 
       require(path.resolve(__dirname, '../../Components/runner/Runner.js')).register();
 
@@ -21,6 +23,7 @@
     </script>
   </head>
   <body>
+    <preferences-modal></preferences-modal>
     <releasenotes-modal></releasenotes-modal>   
     <div class="body">      
       <div class="runners"></div>

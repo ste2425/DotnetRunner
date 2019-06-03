@@ -1,8 +1,13 @@
 const WebComponentBase = require('../WebComponentBase'),
     md = require('markdown-it')(),
     fs = require('fs'),
-    path = require('path');
-
+    path = require('path'),
+    markdownItAttrs = require('markdown-it-attrs'),
+    { shell } = require('electron').remote,
+    { addDeletegateEventListener } = require('../../utils/eventUtils');
+ 
+md.use(markdownItAttrs);
+     
 /**
  * Parses and display the Release Notes MD file.
  */
@@ -15,13 +20,22 @@ module.exports = class ReleaseNotesViewer extends WebComponentBase {
 
         this.applyHTML(shadow, __dirname, 'releaseNotes.html');
 
+        this.applyStyle(shadow, __dirname, 'releaseNotes.css');
+
         const releaseNotesContents = fs.readFileSync(path.resolve(__dirname, '../../../ReleaseNotes.md')).toString();
 
         const releaseNotes = shadow.querySelector('.release-notes');
 
-        releaseNotes.innerHTML = md.render(releaseNotesContents);
+        const cotnainer = document.createElement('div');
 
-        Array.from(releaseNotes.querySelectorAll('table')).forEach(x => x.classList.add('table'));
+        cotnainer.innerHTML = md.render(releaseNotesContents);
+
+        releaseNotes.appendChild(cotnainer);
+
+        addDeletegateEventListener(shadow, 'a.open-external', 'click', (e) => {
+            e.preventDefault();
+            shell.openExternal(e.target.getAttribute('href'));
+        });        
     }
 
     static register() {
