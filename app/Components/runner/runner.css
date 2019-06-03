@@ -9,6 +9,10 @@ span.badge {
     padding: 5px;
 }
 
+:host(:hover) .full-screen-toggle {
+    opacity: 1;
+}
+
 .dterminal {
     background-color: rgb(0, 36, 81);
     color: #cccccc;
@@ -24,4 +28,32 @@ span.badge {
 
 .log-item.error {
     color: red;
+}
+
+.terminal.full-screen {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 200;
+}
+
+.terminal.full-screen::before {
+    content: 'Close';
+    display: block;
+    position: absolute;
+    top: 0px;
+    z-index: 5;
+    right: 20px;
+    color: white;
+    cursor: pointer;
+    border-radius: 3px;
+    border: 1px solid white;
+    padding: 5px;
+    margin: 3px;
+}
+
+.terminal {
+    position: relative;
 }

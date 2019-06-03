@@ -77,8 +77,9 @@ module.exports = class SplashScreenApp {
             .loadFile('app/browserWindows/splashScreen/splashScreen.html');
 
         this._splashWindow.once('ready-to-show', () => {
-            this._splashWindow.show();
-            autoUpdater.checkForUpdates();
+            //this._splashWindow.show();
+           // autoUpdater.checkForUpdates();
+           this._executeOnReady();
         });
     }
 
