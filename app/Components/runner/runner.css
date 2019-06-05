@@ -13,24 +13,19 @@ span.badge {
     opacity: 1;
 }
 
-.dterminal {
-    background-color: rgb(0, 36, 81);
-    color: #cccccc;
-    white-space: pre-line;
+.terminals {
     border: 1px solid rgba(128, 128, 128, 0.35);
-    border-radius: 4px;
-    padding: 5px;
-    word-break: break-word;
+}
+
+.terminals:not(.full-screen) {
     max-height: 200px;
-    overflow: auto;
-    flex: 1;
 }
 
 .log-item.error {
     color: red;
 }
 
-.terminal.full-screen {
+.terminals.full-screen {
     position: absolute;
     top: 0px;
     bottom: 0px;
@@ -39,7 +34,7 @@ span.badge {
     z-index: 200;
 }
 
-.terminal.full-screen::before {
+.terminals.full-screen::before {
     content: 'Close';
     display: block;
     position: absolute;
@@ -54,6 +49,6 @@ span.badge {
     margin: 3px;
 }
 
-.terminal {
+.terminals {
     position: relative;
 }

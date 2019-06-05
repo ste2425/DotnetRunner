@@ -2,6 +2,7 @@ const { killDotnetProcessAsync, startDotnetProcess, startCleanProcess } = requir
 const Terminal = require('xterm').Terminal;
 const fit = require('xterm/lib/addons/fit/fit');
 const fullScreen = require('xterm/lib/addons/fullscreen/fullscreen');
+const debounce = require('../../utils/debounce');
 
 Terminal.applyAddon(fit);
 Terminal.applyAddon(fullScreen);
@@ -45,7 +46,7 @@ module.exports = class RunnerElement extends WebComponentBase {
         const clearLog = shadow.querySelector('.clear-log');
         const clean = shadow.querySelector('.clean');
         const full = shadow.querySelector('.full');
-        const terminal = shadow.querySelector('.terminal');
+        const terminal = shadow.querySelector('.terminals');
 
         clearLog.addEventListener('click', () => this.clearData());
         clean.addEventListener('click', () => this.clean());
@@ -54,7 +55,6 @@ module.exports = class RunnerElement extends WebComponentBase {
             if (e.target.classList.contains('full-screen')) {
                 terminal.classList.remove('full-screen');
                 this._terminalProcess.fit();
-                this._resize(this._terminalProcess.cols, 24);
             }
         });
 
@@ -68,21 +68,19 @@ module.exports = class RunnerElement extends WebComponentBase {
         this._terminalProcess.setOption('disableStdin', true);
         this._terminalProcess.setOption('fontFamily', "Consolas, 'Courier New', monospace");
 
-        this._terminalProcess.open(shadow.querySelector('.terminal'));    
+        this._terminalProcess.open(shadow.querySelector('.terminals'));    
 
         shadow.querySelector('.action').addEventListener('click', this._onToggle.bind(this));
 
-        setTimeout(() => this._terminalProcess.fit());
-
         // Terminal wont fit itself on resize.
-        window.addEventListener('resize', this._resize.bind(this));
+        window.addEventListener('resize', debounce(this._resize.bind(this), {
+            delay: 100,
+            executeOnFirstRun: true
+        }));
     }
 
-    _resize(col, row) {
-        if (col && row)
-            this._terminalProcess.resize(col, row);
-        else
-            this._terminalProcess.fit();
+    _resize() {
+        this._terminalProcess.fit();
 
         if (this._runningProccess)
             this._runningProccess.resize(this._terminalProcess.cols, this._terminalProcess.rows);
