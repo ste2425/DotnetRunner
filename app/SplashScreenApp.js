@@ -72,7 +72,6 @@ module.exports = class SplashScreenApp {
             show: false
         });
 
-        
         this._splashWindow
             .loadFile('app/browserWindows/splashScreen/splashScreen.html');
 

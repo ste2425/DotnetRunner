@@ -5,5 +5,6 @@ module.exports = Object.freeze({
     purgeRunningProcesses: 'purge',
     reloadApplications: 'reload-apps',
     displayReleaseNotes: 'display-release-notes',
-    displayPreferences: 'display-preferences'
+    displayPreferences: 'display-preferences',
+    taskComplete: 'task-complete'
 });

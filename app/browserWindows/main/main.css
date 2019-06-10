@@ -14,7 +14,11 @@
 
 .footer {
     padding: 5px;
-    border-top: solid 1px rgba(128, 128, 128, 0.35);;
+    border-top: solid 1px rgba(128, 128, 128, 0.35);
+}
+
+.footer-content {    
+    min-height: 36px;
 }
 
 html, body {
@@ -28,4 +32,15 @@ body {
 
 .runningProcessCount, #github {
     cursor: pointer;
+}
+
+.batch-run-message.hide {
+    display: none;
+}
+
+div.batch-run-message {    
+    padding: 5px;
+    width: 500px;
+    text-align: center;
+    margin: 0px;
 }

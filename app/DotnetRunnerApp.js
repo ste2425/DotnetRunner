@@ -1,4 +1,4 @@
-const { BrowserWindow, Menu } = require('electron');
+const { BrowserWindow, Menu, ipcMain } = require('electron');
 const { getApplications } = require('./data/applicationStore');
 const { shell } = require('electron');
 const ipcMessages = require('./ipcMessages');
@@ -82,6 +82,7 @@ module.exports = class DotnetRunnerApp {
             {
                 label: 'Options',
                 submenu: [{
+                    id: 'config-apps',
                     label: 'Configure Applicaions',                    
                     click: this._preferencesOnCLick.bind(this)
                 }, {
@@ -89,20 +90,25 @@ module.exports = class DotnetRunnerApp {
                     click: this._displayPreferences.bind(this)
                 }]
             }, {
+                id: 'tasks',
                 label: 'Tasks',
                 submenu: [{
+                    id: 'start-all',
                     label: 'Start all',
                     accelerator: 'Ctrl+s',
                     click: this._startAllApps.bind(this)
                 }, {
+                    id: 'stop-all',
                     label: 'Stop all',
                     accelerator: 'Ctrl+Shift+S',
                     click: this._stopAllApps.bind(this)
                 }, {
+                    id: 'clear-all',
                     label: 'Clear all',
                     accelerator: 'Ctrl+Shift+C',
                     click: this._clearAllApps.bind(this)
                 }, {
+                    id: 'purge-all',
                     label: 'Purge',
                     accelerator: 'Ctrl+Shift+P',
                     click: this._purge.bind(this)
@@ -142,15 +148,24 @@ module.exports = class DotnetRunnerApp {
     }
 
     _startAllApps() {
+        this._disableTasks();
+        this._disableConfigAppMenu();
         this._sendMessage(ipcMessages.startAllApplications);
+        ipcMain.once(ipcMessages.taskComplete, this._onTaskComplete.bind(this));
     }
 
     _stopAllApps() {
+        this._disableTasks();
+        this._disableConfigAppMenu();
         this._sendMessage(ipcMessages.stopAllApplications);
+        ipcMain.once(ipcMessages.taskComplete, this._onTaskComplete.bind(this));
     }
 
     _clearAllApps() {
+        this._disableTasks();
+        this._disableConfigAppMenu();
         this._sendMessage(ipcMessages.clearAllApplicationLogs);
+        ipcMain.once(ipcMessages.taskComplete, this._onTaskComplete.bind(this));
     }
 
     _purge() {
@@ -159,6 +174,43 @@ module.exports = class DotnetRunnerApp {
 
     _sendMessage(message) {
         this._mainWindow.send(message);
+    }
+
+    _disableTasks() {
+        const menu = this._menu.getApplicationMenu().getMenuItemById('tasks');
+
+        if (!menu || !menu.submenu || !menu.submenu.items)
+            return;
+
+        menu.submenu.items.forEach(x => x.enabled = false);
+    }
+
+    _enableTasks() {
+        const menu = this._menu.getApplicationMenu().getMenuItemById('tasks');
+
+        if (!menu || !menu.submenu || !menu.submenu.items)
+            return;
+
+        menu.submenu.items.forEach(x => x.enabled = true);
+    }
+
+    _disableConfigAppMenu() {
+        const menu = this._menu.getApplicationMenu().getMenuItemById('config-apps') || {};
+
+        menu.enabled = false;
+    }
+
+    _enableConfigAppMenu() {
+        const menu = this._menu.getApplicationMenu().getMenuItemById('config-apps') || {};
+
+        menu.enabled = true;
+    }
+
+    _onTaskComplete(e, task) {
+        if (task === ipcMessages.startAllApplications || task === ipcMessages.stopAllApplications || task === ipcMessages.clearAllApplicationLogs)
+            this._enableConfigAppMenu();
+
+        this._enableTasks();
     }
 
     /**

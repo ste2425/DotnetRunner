@@ -1,4 +1,6 @@
-const { exec, spawn } = require('child_process');
+const { exec } = require('child_process');
+const pty = require('node-pty');
+const os = require('os');
 
 /**
  * @returns {Promise<string>} - resolves with the string output from executin the command.
@@ -51,21 +53,52 @@ module.exports.killDotnetProcessAsync = function (pid) {
  * @param {boolean} watch - If set it will execute a watch
  * @param {string} commandArgs - Extra arguments to pass to the run command
  * 
- * @returns {ChildProcess}
+ * @returns {IPty}
  */
-module.exports.startDotnetProcess = function (projectPath, watch, commandArgs = '') {
+module.exports.startDotnetProcess = function (projectPath, watch, commandArgs = '', cols, rows) {
     const args = [];
 
-    if (watch)
-        args.push('watch');
+    const command = `dotnet ${watch ? 'watch' : ''} run`;
 
-    args.push('run');
+    const isWin = os.platform() === 'win32';    
 
-    args.push(...commandArgs.split(' '));
+    var shell = isWin ? 'powershell.exe' : 'bash.exe';
 
-    return spawn('dotnet', args, {
+    if (isWin)
+        args.push('-Command');
+    else
+        args.push('-c')
+
+    args.push(`${command} ${commandArgs}`);
+    
+    return pty.spawn(shell, args, {
+        name: 'StartDotnet',
         cwd: projectPath,
-        detached: false,
-        shell: true
+        env: process.env,
+        cols, 
+        rows
+    });
+}
+
+module.exports.startCleanProcess = function (projectPath) {
+    const args = [];
+
+    const command = `dotnet clean`;
+
+    const isWin = os.platform() === 'win32';
+
+    var shell = isWin ? 'powershell.exe' : 'bash';
+
+    if (isWin)
+        args.push('-Command');
+    else
+        args.push('-c')
+
+    args.push(command);
+    
+    return pty.spawn(shell, args, {
+        name: 'StartDotnet',
+        cwd: projectPath,
+        env: process.env
     });
 }

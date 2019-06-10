@@ -1,4 +1,12 @@
-const { killDotnetProcessAsync, startDotnetProcess } = require('../../tasks');
+const { killDotnetProcessAsync, startDotnetProcess, startCleanProcess } = require('../../tasks');
+const Terminal = require('xterm').Terminal;
+const fit = require('xterm/lib/addons/fit/fit');
+const fullScreen = require('xterm/lib/addons/fullscreen/fullscreen');
+const debounce = require('../../utils/debounce');
+
+Terminal.applyAddon(fit);
+Terminal.applyAddon(fullScreen);
+
 const WebComponentBase = require('../WebComponentBase');
 
 module.exports = class RunnerElement extends WebComponentBase {
@@ -13,6 +21,8 @@ module.exports = class RunnerElement extends WebComponentBase {
         this.runCommandArguments = '';
 
         this._name = '';
+
+        this._terminalProcess;
 
         this.setState(RunnerElement.states.stopped);
     }
@@ -34,10 +44,48 @@ module.exports = class RunnerElement extends WebComponentBase {
             this.setState(this.state);
 
         const clearLog = shadow.querySelector('.clear-log');
+        const clean = shadow.querySelector('.clean');
+        const full = shadow.querySelector('.full');
+        const terminal = shadow.querySelector('.terminals');
 
         clearLog.addEventListener('click', () => this.clearData());
+        clean.addEventListener('click', () => this.clean());
+
+        terminal.addEventListener('click', (e) => {
+            if (e.target.classList.contains('full-screen')) {
+                terminal.classList.remove('full-screen');
+                this._terminalProcess.fit();
+            }
+        });
+
+        full.addEventListener('click', () => {
+            terminal.classList.add('full-screen');
+
+            this.resize();
+        });
+
+        this._terminalProcess = new Terminal();
+        this._terminalProcess.setOption('disableStdin', true);
+        this._terminalProcess.setOption('fontFamily', "Consolas, 'Courier New', monospace");
+
+        this._terminalProcess.open(shadow.querySelector('.terminals'));    
 
         shadow.querySelector('.action').addEventListener('click', this._onToggle.bind(this));
+
+        // Terminal wont fit itself on resize.
+        window.addEventListener('resize', debounce(this.resize.bind(this), {
+            delay: 100,
+            executeOnFirstRun: true
+        }));
+
+        this.resize();
+    }
+
+    resize() {
+        this._terminalProcess.fit();
+
+        if (this._runningProccess)
+            this._runningProccess.resize(this._terminalProcess.cols, this._terminalProcess.rows);
     }
 
     _enableAction() {
@@ -67,6 +115,20 @@ module.exports = class RunnerElement extends WebComponentBase {
         }
     }
 
+    _enableClean() {
+        if (!this.shadowRoot)
+            return;
+
+        this.shadowRoot.querySelector('.clean').removeAttribute('disabled');
+    }
+    
+    _disableClean() {
+        if (!this.shadowRoot)
+            return;
+
+        this.shadowRoot.querySelector('.clean').setAttribute('disabled', 'disabled');
+    }
+
     onStart() {
         if (this.state === RunnerElement.states.running || this.state === RunnerElement.states.starting)
             return;
@@ -75,43 +137,43 @@ module.exports = class RunnerElement extends WebComponentBase {
 
         this.setState(RunnerElement.states.starting);
 
-        this._runningProccess = startDotnetProcess(this.cwd, true, this.runCommandArguments);
+        this._terminalProcess.writeln("Starting...");
 
-        this._runningProccess.on('close', () => {
+        this._runningProccess = startDotnetProcess(this.cwd, true, this.runCommandArguments, this._terminalProcess.cols, this._terminalProcess.rows);
+
+        this._runningProccess.on('exit', () => {
             this.setState(RunnerElement.states.stopped);
 
             this._runningProccess = undefined;
         });
 
-        this._runningProccess.stdout.on('data', (d) => this.onData(d.toString()));
-        this._runningProccess.stderr.on('data', (d) => this.onData(d.toString(), true));
+        this._runningProccess.once('data', () => this.setState(RunnerElement.states.running));
+
+        this._runningProccess.on('data', (d) => {
+            this._terminalProcess.write(d);
+        });
     }
 
-    onData(d, errorData) {
-        if (this.state === RunnerElement.states.starting)
+    clean() {
+        if (this.state === RunnerElement.states.running || this.state === RunnerElement.states.starting)
+            return;
+
+        this._runningProccess = startCleanProcess(this.cwd);
+
+        this._runningProccess.on('exit', () => {
+            this.setState(RunnerElement.states.stopped);
+
+            this._runningProccess = undefined;
+        });
+
+        this._runningProccess.on('data', (d) => {
             this.setState(RunnerElement.states.running);
-
-        const el = document.createElement('span');
-        const terminal = this.shadowRoot.querySelector('.terminal');
-
-        el.classList.add('log-item');
-
-        if (errorData)
-            el.classList.add('error');
-        
-        el.textContent = d;
-
-        terminal.appendChild(el);
-
-        terminal.scrollTop = terminal.scrollHeight;
+            this._terminalProcess.write(d);
+        });
     }
 
     clearData() {
-        const terminal = this.shadowRoot.querySelector('.terminal');
-
-        while(terminal.firstChild) {
-            terminal.removeChild(terminal.firstChild);
-        }
+        this._terminalProcess.clear();
     }
 
     onTerminate() {      
@@ -136,6 +198,7 @@ module.exports = class RunnerElement extends WebComponentBase {
 
     setState(state) {
         this._disableAction();
+        this._disableClean();
 
         this.state = state;
         
@@ -166,6 +229,7 @@ module.exports = class RunnerElement extends WebComponentBase {
                 stateEl.textContent = 'Stopped';
                 stateEl.className = 'state badge badge-secondary';
                 this._enableAction();
+                this._enableClean();
                 actionBtn.textContent = 'Start';
             break;
         }

@@ -9,19 +9,42 @@ span.badge {
     padding: 5px;
 }
 
-.terminal {
-    background-color: rgb(0, 36, 81);
-    color: #cccccc;
-    white-space: pre-line;
+:host(:hover) .full-screen-toggle {
+    opacity: 1;
+}
+
+.terminals {
     border: 1px solid rgba(128, 128, 128, 0.35);
-    border-radius: 4px;
-    padding: 5px;
-    word-break: break-word;
-    max-height: 200px;
-    overflow: auto;
-    flex: 1;
 }
 
 .log-item.error {
     color: red;
+}
+
+.terminals.full-screen {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 200;
+}
+
+.terminals.full-screen::before {
+    content: 'Close';
+    display: block;
+    position: absolute;
+    top: 0px;
+    z-index: 5;
+    right: 20px;
+    color: white;
+    cursor: pointer;
+    border-radius: 3px;
+    border: 1px solid white;
+    padding: 5px;
+    margin: 3px;
+}
+
+.terminals {
+    position: relative;
 }
