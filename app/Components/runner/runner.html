@@ -1,7 +1,14 @@
 <link rel="stylesheet" href="../../../node_modules/bootstrap-css-only/css/bootstrap.css">
 <link rel="stylesheet" href="../../../node_modules/xterm/dist/xterm.css" />
 <link rel="stylesheet" href="../../../node_modules/xterm/lib/addons/fullscreen/fullscreen.css" />
-
+<!--
+    This ensures the style is applied when xterm attempts to check size of terminal container.
+-->
+<style>
+    .terminals:not(.full-screen) {
+        max-height: 200px;
+    }
+</style>
 <div class="d-flex align-items-center justify-content-between flex-row">
     <h1 class="name"></h1>    
     

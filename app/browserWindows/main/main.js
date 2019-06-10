@@ -121,30 +121,50 @@ async function onPurgeClick() {
 async function onStartAll() {
     const pref = preferencesStore.getPreferences();
 
-    if (pref.waitTimeout === 0)
-        apps.forEach(x => x.component.onStart());
-    else 
-        apps.reduce((accu, cur) => {
-            return accu
-                .then(() => 
-                    new Promise((res) => {
-                        cur.component.onStart();
-                        setTimeout(() => {
-                            res();
-                        }, pref.waitTimeout * 1000);
-                    })
-                );
-        }, Promise.resolve());
+    document.querySelector('.batch-run-message').classList.remove('hide');
+
+    try {
+        if (pref.waitTimeout === 0)
+            apps.forEach(x => x.component.onStart());
+        else 
+            await apps.reduce((accu, cur) => {
+                return accu
+                    .then(() => 
+                        new Promise((res) => {
+                            cur.component.onStart();
+                            setTimeout(() => {
+                                res();
+                            }, pref.waitTimeout * 1000);
+                        })
+                    );
+            }, Promise.resolve());
+    } catch(e) {
+        throw e;
+    } finally {
+        ipcRenderer.send(ipcMessages.taskComplete, ipcMessages.startAllApplications);
+        document.querySelector('.batch-run-message').classList.add('hide');
+    }
 }
 
 async function onTerminateAll() {
-    const promises = apps.map(x => x.component.onTerminate());
+    document.querySelector('.batch-run-message').classList.remove('hide');    
 
-    return Promise.all(promises);
+    try {
+        const promises = apps.map(x => x.component.onTerminate());
+        await Promise.all(promises);
+    } catch(e) {
+        throw e;
+    } finally {        
+        ipcRenderer.send(ipcMessages.taskComplete, ipcMessages.stopAllApplications);
+        document.querySelector('.batch-run-message').classList.add('hide');  
+    }    
 }
 
 function onClearAll() {
+    document.querySelector('.batch-run-message').classList.remove('hide');
     apps.forEach(a => a.component.clearData());
+    ipcRenderer.send(ipcMessages.taskComplete, ipcMessages.clearAllApplicationLogs);
+    document.querySelector('.batch-run-message').classList.add('hide');
 }
 
 

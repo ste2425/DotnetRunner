@@ -61,7 +61,7 @@ module.exports = class RunnerElement extends WebComponentBase {
         full.addEventListener('click', () => {
             terminal.classList.add('full-screen');
 
-            this._resize();
+            this.resize();
         });
 
         this._terminalProcess = new Terminal();
@@ -73,13 +73,15 @@ module.exports = class RunnerElement extends WebComponentBase {
         shadow.querySelector('.action').addEventListener('click', this._onToggle.bind(this));
 
         // Terminal wont fit itself on resize.
-        window.addEventListener('resize', debounce(this._resize.bind(this), {
+        window.addEventListener('resize', debounce(this.resize.bind(this), {
             delay: 100,
             executeOnFirstRun: true
         }));
+
+        this.resize();
     }
 
-    _resize() {
+    resize() {
         this._terminalProcess.fit();
 
         if (this._runningProccess)
