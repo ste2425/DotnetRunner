@@ -1,4 +1,4 @@
-const { killDotnetProcessAsync, startDotnetProcess, startCleanProcess } = require('../../tasks');
+const { startDotnetProcess, startCleanProcess } = require('../../tasks');
 const Terminal = require('xterm').Terminal;
 const fit = require('xterm/lib/addons/fit/fit');
 const fullScreen = require('xterm/lib/addons/fullscreen/fullscreen');
@@ -160,8 +160,10 @@ module.exports = class RunnerElement extends WebComponentBase {
 
         this._runningProccess = startCleanProcess(this.cwd);
 
-        this._runningProccess.on('exit', () => {
+        this._runningProccess.once('exit', () => {
             this.setState(RunnerElement.states.stopped);
+
+            this._runningProccess.kill();
 
             this._runningProccess = undefined;
         });
@@ -182,11 +184,7 @@ module.exports = class RunnerElement extends WebComponentBase {
     
         this.setState(RunnerElement.states.stopping);
 
-        return killDotnetProcessAsync(this._runningProccess.pid)
-            .then((d) => {
-                console.log('KILLED', d);
-                return d;
-            });
+        return this._runningProccess.kill();
     }
 
     set name(value) {

@@ -112,10 +112,18 @@ async function onPurgeClick() {
 
     const kill = await showYesNoDialogAsync(`There are upto (${toKillCount}) dotnet processes running (Potentially including child processes). Stop them all?`);
 
-    if (kill)
-       await stopAllDotnetProcessesAsync();
+    if(!kill)
+        return;
 
-    runningProccessesCounter.triggerNow();
+    try {
+        apps.forEach(x => x.component.onTerminate());
+        
+        await stopAllDotnetProcessesAsync();
+    } catch(e) {
+        console.error('Error purging', e);
+    } finally {
+        runningProccessesCounter.triggerNow();
+    }
 }
 
 async function onStartAll() {
