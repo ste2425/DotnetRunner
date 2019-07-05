@@ -17,6 +17,17 @@ span.badge {
     border: 1px solid rgba(128, 128, 128, 0.35);
 }
 
+.terminals:not(.full-screen) .full-screen-options {
+    display: none;
+}
+
+.terminals.full-screen .full-screen-options {
+    position: absolute;
+    top: 5px;
+    z-index: 5;
+    right: 20px;
+}
+
 .log-item.error {
     color: red;
 }
@@ -28,21 +39,6 @@ span.badge {
     left: 0px;
     right: 0px;
     z-index: 200;
-}
-
-.terminals.full-screen::before {
-    content: 'Close';
-    display: block;
-    position: absolute;
-    top: 0px;
-    z-index: 5;
-    right: 20px;
-    color: white;
-    cursor: pointer;
-    border-radius: 3px;
-    border: 1px solid white;
-    padding: 5px;
-    margin: 3px;
 }
 
 .terminals {

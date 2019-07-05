@@ -97,7 +97,7 @@ async function onReloadDataIPC() {
 
             onTerminateAll()
                 .finally(() => {
-                    remote.getCurrentWindow().close();
+                    process.nextTick(() => remote.getCurrentWindow().close());  
                 });
         }
     });
