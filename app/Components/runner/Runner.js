@@ -3,6 +3,7 @@ const Terminal = require('xterm').Terminal;
 const fit = require('xterm/lib/addons/fit/fit');
 const fullScreen = require('xterm/lib/addons/fullscreen/fullscreen');
 const debounce = require('../../utils/debounce');
+const { clipboard } = require('electron');
 
 Terminal.applyAddon(fit);
 Terminal.applyAddon(fullScreen);
@@ -47,15 +48,16 @@ module.exports = class RunnerElement extends WebComponentBase {
         const clean = shadow.querySelector('.clean');
         const full = shadow.querySelector('.full');
         const terminal = shadow.querySelector('.terminals');
+        const copyLogBtn = shadow.querySelectorAll('.copy-log');
+        const closeFullScreen = shadow.querySelector('.close-fullscreen');
 
         clearLog.addEventListener('click', () => this.clearData());
         clean.addEventListener('click', () => this.clean());
+        copyLogBtn.forEach(x => x.addEventListener('click', () => this.exportLog()));
 
-        terminal.addEventListener('click', (e) => {
-            if (e.target.classList.contains('full-screen')) {
-                terminal.classList.remove('full-screen');
-                this._terminalProcess.fit();
-            }
+        closeFullScreen.addEventListener('click', (e) => {
+            terminal.classList.remove('full-screen');
+            this._terminalProcess.fit();
         });
 
         full.addEventListener('click', () => {
@@ -77,6 +79,15 @@ module.exports = class RunnerElement extends WebComponentBase {
             delay: 100,
             executeOnFirstRun: true
         }));
+
+        terminal.addEventListener('contextmenu', () => {
+            const selection = this._terminalProcess.getSelection();
+
+            if (selection)
+                clipboard.writeText(selection.trim());
+
+            this._terminalProcess.clearSelection();
+        });
 
         this.resize();
     }
@@ -180,11 +191,23 @@ module.exports = class RunnerElement extends WebComponentBase {
 
     onTerminate() {      
         if (!this._runningProccess || this.state === RunnerElement.states.stopped || this.state === RunnerElement.states.stopping)
-            return Promise.resolve();
+            return;
     
         this.setState(RunnerElement.states.stopping);
 
-        return this._runningProccess.kill();
+        this._runningProccess.kill();
+    }
+
+    exportLog() {
+        if (!this._terminalProcess)
+            return;
+
+        this._terminalProcess.selectAll();
+        const log = this._terminalProcess.getSelection();
+        this._terminalProcess.clearSelection();
+
+        if (log)
+            clipboard.writeText(log.trim());
     }
 
     set name(value) {

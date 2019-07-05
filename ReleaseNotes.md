@@ -1,16 +1,16 @@
-## Version 0.1.7
+## Version 0.2.0
 ---
 
 Release highlights:
 
-* Fixed potential memory leak issue
+* Added copying of logs to the clipboard
 
 ---
 
-# Memory Leak
+# Copying logs to the clipboard
 
-When teminating an application, either by stoppingit directly or by purging dotnet apps it was possible for some satellite proccess to remain.
+It is now possible to copy the entire log of a terminal to the systems clipboard. This also includes the selected text.
 
-These will now be terminated also.
+To copy only the selected text, first highlight the desired text then right click on the terminal.
 
-More information can be found [In the Wiki](https://github.com/ste2425/DotnetRunner/wiki/Node-PTY-and-satellite-Dotnet-processes){.open-external}
+To copy the entire log, select `Copy Log` from the drop down menu of each terminal.
