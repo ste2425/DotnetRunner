@@ -22,6 +22,16 @@ let apps = [];
 
 document.addEventListener('DOMContentLoaded', onDomContentLoaded);
 
+
+document.addEventListener('state-change', () => {
+    const running = apps.reduce((accu, cur) => cur.component.state !== Runner.states.stopped ? accu + 1 : accu, 0);
+
+    if (running === 0)
+        ipcRenderer.send(ipcMessages.trayTooltipText, '');
+    else
+        ipcRenderer.send(ipcMessages.trayTooltipText, `(${running}) ${running ? 'app' : 'apps'} running`);
+});
+
 ipcRenderer.on(ipcMessages.reloadApplications, onReloadDataIPC);
 
 ipcRenderer.on(ipcMessages.displayReleaseNotes, onDisplayReleaseNotes);

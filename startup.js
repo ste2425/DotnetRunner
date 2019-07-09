@@ -5,6 +5,10 @@ const SplashScreenApp = require('./app/SplashScreenApp');
 
 const preferenceStore = require('./app/data/preferencesStore');
 
+const ipcMessages = require('./app/ipcMessages');
+
+const tray = require('./app/tray');
+
 const splashApp = new SplashScreenApp();
 const dotnetApp = new DotnetRunnerApp(BrowserWindow, Menu);
 
@@ -15,9 +19,19 @@ splashApp.onReady = function(settings) {
         .once('ready-to-show', () => {
             splashApp.close();
             dotnetApp.show();
+
+            tray.create({
+                onQuit() {
+                    app.quit();
+                },
+                onClick() {
+                    dotnetApp.show()
+                }
+            });
+
+            dotnetApp.on(ipcMessages.trayTooltipText, (e, t) => tray.setTooltip(t));
         });
 }
-
 app.on('ready', () => {
     splashApp.run();
 });

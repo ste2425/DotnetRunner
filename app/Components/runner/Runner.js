@@ -163,6 +163,8 @@ module.exports = class RunnerElement extends WebComponentBase {
         this._runningProccess.on('data', (d) => {
             this._terminalProcess.write(d);
         });
+        
+        this._emitEvent('starting');
     }
 
     clean() {
@@ -196,6 +198,8 @@ module.exports = class RunnerElement extends WebComponentBase {
         this.setState(RunnerElement.states.stopping);
 
         this._runningProccess.kill();
+
+        this._emitEvent('stopped');
     }
 
     exportLog() {
@@ -234,17 +238,26 @@ module.exports = class RunnerElement extends WebComponentBase {
                 stateEl.textContent = 'Starting';
                 stateEl.className = 'state badge badge-info';
                 actionBtn.textContent = 'Stop';
+                this._emitEvent('state-change', {
+                    state: RunnerElement.states.starting
+                });
             break;
             case RunnerElement.states.running:
                 stateEl.textContent = 'Running';
                 stateEl.className = 'state badge badge-success';
                 actionBtn.textContent = 'Stop';
                 this._enableAction();
+                this._emitEvent('state-change', {
+                    state: RunnerElement.states.running
+                });
             break;
             case RunnerElement.states.stopping:
                 stateEl.textContent = 'Stopping';
                 stateEl.className = 'state badge badge-info';
                 actionBtn.textContent = 'Start';
+                this._emitEvent('state-change', {
+                    state: RunnerElement.states.stopping
+                });
             break;
             case RunnerElement.states.stopped:
                 stateEl.textContent = 'Stopped';
@@ -252,8 +265,20 @@ module.exports = class RunnerElement extends WebComponentBase {
                 this._enableAction();
                 this._enableClean();
                 actionBtn.textContent = 'Start';
+                this._emitEvent('state-change', {
+                    state: RunnerElement.states.stopped
+                });
             break;
         }
+    }
+
+    _emitEvent(key, data) {
+        const e = new CustomEvent(key, {
+            detail: data,
+            bubbles: true
+        });
+
+        this.dispatchEvent(e);
     }
 
     static register() {

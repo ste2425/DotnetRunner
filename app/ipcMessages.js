@@ -6,5 +6,6 @@ module.exports = Object.freeze({
     reloadApplications: 'reload-apps',
     displayReleaseNotes: 'display-release-notes',
     displayPreferences: 'display-preferences',
-    taskComplete: 'task-complete'
+    taskComplete: 'task-complete',
+    trayTooltipText: 'tray-tooltip-text'
 });

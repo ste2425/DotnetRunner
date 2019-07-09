@@ -1,16 +1,12 @@
-## Version 0.2.0
+## Version 0.2.1
 ---
 
 Release highlights:
 
-* Added copying of logs to the clipboard
+* Added tray icon
 
 ---
 
-# Copying logs to the clipboard
+# Tray Icon
 
-It is now possible to copy the entire log of a terminal to the systems clipboard. This also includes the selected text.
-
-To copy only the selected text, first highlight the desired text then right click on the terminal.
-
-To copy the entire log, select `Copy Log` from the drop down menu of each terminal.
+It is now possible to minimize Dotnet Runner to the system tray. A tray icon has been created, when minimized clicking the icon will maximize the application.
