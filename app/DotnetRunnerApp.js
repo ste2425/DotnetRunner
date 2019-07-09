@@ -213,6 +213,13 @@ module.exports = class DotnetRunnerApp {
         this._enableTasks();
     }
 
+    _handleMinimizeToTray() {
+        this._mainWindow.on('minimize', (e) => {
+            e.preventDefault();
+            this._mainWindow.hide();
+        });
+    }
+
     /**
      * @returns {Menu}
      */
@@ -246,6 +253,8 @@ module.exports = class DotnetRunnerApp {
 
         this._menu.setApplicationMenu(this.getMenu());
 
+        this._handleMinimizeToTray();
+
         const eixstingApps = getApplications();
 
         if (!eixstingApps || eixstingApps.length === 0) {
@@ -254,7 +263,7 @@ module.exports = class DotnetRunnerApp {
 
         if (displayReleaseNotes)
             this._mainWindow.once('ready-to-show', () => this._displayReleaseNotes());
-
+        
         return this;
     }
 
@@ -266,5 +275,9 @@ module.exports = class DotnetRunnerApp {
 
     once(...args) {
         this._mainWindow.once(...args);
+    }
+
+    on(...args) {
+        ipcMain.on(...args);
     }
 }
