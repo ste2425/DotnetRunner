@@ -273,6 +273,14 @@ module.exports = class DotnetRunnerApp {
         this._mainWindow.maximize();
     }
 
+    onSecondInstance() {
+        if (this._mainWindow.isMinimized())
+            this._mainWindow.restore();
+
+        this._mainWindow.show();
+        this._mainWindow.focus();
+    }
+
     once(...args) {
         this._mainWindow.once(...args);
     }

@@ -17,6 +17,7 @@ splashApp.onReady = function(settings) {
     
     dotnetApp.run({ displayReleaseNotes: preferences.autoOpenReleasenotes && settings.upgradePerformed })
         .once('ready-to-show', () => {
+
             splashApp.close();
             dotnetApp.show();
 
@@ -33,6 +34,21 @@ splashApp.onReady = function(settings) {
         });
 }
 app.on('ready', () => {
+    const shouldQuit = !app.requestSingleInstanceLock();
+
+    if (shouldQuit) {
+        app.quit();
+        return;
+    } else {
+        app.on('second-instance', () => {
+            if (splashApp.ready) {
+                dotnetApp.onSecondInstance();
+            } else {
+                splashApp.onSecondInstance();
+            }
+        });
+    }
+
     splashApp.run();
 });
 

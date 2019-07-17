@@ -15,6 +15,8 @@ module.exports = class SplashScreenApp {
 
         this.onReady;
 
+        this.ready = false;
+
         autoUpdater.on('checking-for-update', () => {
             this._splashWindow
                 .webContents.send('checking-for-update');
@@ -85,6 +87,14 @@ module.exports = class SplashScreenApp {
         this._splashWindow.close();
     }
 
+    onSecondInstance() {
+        if (this._splashWindow.isMinimized())
+            this._splashWindow.restore();
+
+        this._splashWindow.show();
+        this._splashWindow.focus();
+    }
+
     _executeOnReady() {
         const settings = {
             upgradePerformed: upgradeState.isUpgradeActive()
@@ -92,6 +102,8 @@ module.exports = class SplashScreenApp {
 
         if (settings.upgradePerformed)
             upgradeState.markUpgradeFinished();
+
+        this.ready = true;
 
         this.onReady(settings);
     }

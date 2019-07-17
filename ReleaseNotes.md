@@ -1,12 +1,12 @@
-## Version 0.2.1
+## Version 1.0.0
 ---
 
 Release highlights:
 
-* Added tray icon
+* Made single instance
 
 ---
 
-# Tray Icon
+# Single Instance
 
-It is now possible to minimize Dotnet Runner to the system tray. A tray icon has been created, when minimized clicking the icon will maximize the application.
+Dotnet Runner will now not allow multiple instances to be run. If an instance is already running that will instead be focused.
